@@ -1,6 +1,39 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.core.validators import RegexValidator
 from django.db import models
+
+
+class CustomUserManager(UserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser', False)
+        if not email:
+            raise ValueError('Users must have an email address')
+
+        user = self.model(
+            email=email,
+            **extra_fields
+        )
+
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        user = self.create_user(
+            email,
+            birthdate="1970-01-01",
+            password=password,
+            **extra_fields
+        )
+
+        user.is_admin = True
+        user.save(using=self._db)
+
+        return user
 
 
 class User(AbstractUser):
@@ -37,3 +70,6 @@ class User(AbstractUser):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = CustomUserManager()
+
