@@ -14,7 +14,10 @@ class Books(TimestampedModel):
     book_num = models.AutoField(primary_key=True)
     # integerfield 어떻게 쓰는지 확인
 
-    cover_photo = models.ImageField(blank=True)
+    cover_photo = models.ImageField(
+        upload_to="books/%Y/%M",
+        blank=True
+    )
     title = models.CharField(max_length=100, db_index=True)
     writer = models.CharField(max_length=100, db_index=True)
     translator = models.CharField(max_length=100, blank=True)
