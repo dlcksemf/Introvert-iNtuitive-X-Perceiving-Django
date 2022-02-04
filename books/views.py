@@ -1,3 +1,52 @@
 from django.shortcuts import render
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.viewsets import ModelViewSet
 
-# Create your views here.
+from books.models import Books, LoanedBooks, Wishes, Applications
+from books.serializers import BooksSerializer, LoanedBooksSerializer, WishesSerializer, ApplicationsSerializer
+
+
+class BooksViewSet(ModelViewSet):
+    queryset = Books.objects.all()
+    serializer_class = BooksSerializer
+
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [AllowAny()]
+        return [IsAuthenticated()]
+
+    # def get_queryset(self):
+    #     qs= super().get_queryset()
+    #
+    #     query=self.request.query_params.get("query","")
+    #     if query:
+    #         qs=qs.filter(champion__icontains=query)
+    #
+    #     return qs
+
+class LoanedBooksViewSet(ModelViewSet):
+    queryset = LoanedBooks.objects.all()
+    serializer_class = LoanedBooksSerializer
+
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [AllowAny()]
+        return [IsAuthenticated()]
+
+class WishesViewSet(ModelViewSet):
+    queryset = Wishes.objects.all()
+    serializer_class = WishesSerializer
+
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [AllowAny()]
+        return [IsAuthenticated()]
+
+class ApplicationsViewSet(ModelViewSet):
+    queryset = Applications.objects.all()
+    serializer_class = ApplicationsSerializer
+
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [AllowAny()]
+        return [IsAuthenticated()]

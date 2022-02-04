@@ -11,7 +11,7 @@ class TimestampedModel(models.Model):
 
 
 class Books(TimestampedModel):
-    book_num = models.IntegerField(primary_key=True)
+    book_num = models.AutoField(primary_key=True)
     # integerfield 어떻게 쓰는지 확인
 
     cover_photo = models.ImageField(blank=True)
@@ -42,8 +42,8 @@ class Books(TimestampedModel):
         verbose_name_plural="도서 목록"
 
 
-class Loaned_books(models.Model):
-    loan_num = models.IntegerField(primary_key=True)
+class LoanedBooks(models.Model):
+    loan_num = models.AutoField(primary_key=True)
 
     loaned_date = models.DateField(auto_now_add=True)
     return_due_date = models.DateField()
@@ -58,7 +58,7 @@ class Loaned_books(models.Model):
         ]
     )
 
-    book_num = models.ForeignKey(Books, on_delete=models.CASCADE)
+    book_name = models.ForeignKey(Books, on_delete=models.CASCADE)
     email = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     class Meta:
@@ -68,9 +68,9 @@ class Loaned_books(models.Model):
 
 
 class Wishes(models.Model):
-    wish_num = models.IntegerField(primary_key=True)
+    wish_num = models.AutoField(primary_key=True)
 
-    book_num = models.ForeignKey(Books, on_delete=models.CASCADE)
+    book_name = models.ForeignKey(Books, on_delete=models.CASCADE)
     email = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     class Meta:
@@ -80,7 +80,7 @@ class Wishes(models.Model):
 
 
 class Applications(TimestampedModel):
-    application_num = models.IntegerField(primary_key=True)
+    application_num = models.AutoField(primary_key=True)
 
     title = models.CharField(max_length=100,db_index=True)
     writer = models.CharField(max_length=100,db_index=True)
