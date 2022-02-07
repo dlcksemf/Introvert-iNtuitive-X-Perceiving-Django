@@ -45,7 +45,7 @@ class UserCreationSerializer(serializers.ModelSerializer):
 class TokenObtainPairSerializer(OriginTokenObtainPairSerializer):
     def validate(self, attrs):
         data: Dict = super().validate(attrs)
-        data["username"] = self.user.username
+        data["email"] = self.user.email
         # TODO : 프로필 이미지 URL
         return data
 
