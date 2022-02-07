@@ -137,6 +137,13 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+
+# django-cors-headers
+# https://github.com/adamchainz/django-cors-headers
+
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
