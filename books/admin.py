@@ -1,3 +1,23 @@
 from django.contrib import admin
 
-# Register your models here.
+from books.models import Books, LoanedBooks, Wishes, Applications
+
+
+@admin.register(Books)
+class BooksAdmin(admin.ModelAdmin):
+    list_display = ["book_num", "title", "writer", "publisher", "ISBN", "state"]
+
+
+@admin.register(LoanedBooks)
+class LoanedBooksAdmin(admin.ModelAdmin):
+    list_display = ["loan_num", "loaned_date", "return_due_date", "returned_date", "return_state", "book_name", "email"]
+
+
+@admin.register(Wishes)
+class WishesAdmin(admin.ModelAdmin):
+    list_display = ["wish_num", "book_name", "email"]
+
+
+@admin.register(Applications)
+class ApplicationsAdmin(admin.ModelAdmin):
+    list_display = ["application_num", "title", "writer", "publisher", "ISBN", "state", "email"]
