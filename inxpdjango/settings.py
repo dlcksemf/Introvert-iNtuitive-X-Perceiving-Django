@@ -140,7 +140,6 @@ CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # djangorestframwork
@@ -154,4 +153,8 @@ REST_FRAMEWORK = {
     ],
     # 디폴트 만료 시간 : 5분
     "ACCESS_TOKEN_LIFETIME": timedelta(days=7),
+}
+
+SIMPLE_JWT = {
+    'USER_ID_FIELD': 'email',
 }

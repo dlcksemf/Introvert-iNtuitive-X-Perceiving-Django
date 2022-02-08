@@ -46,7 +46,8 @@ class TokenObtainPairSerializer(OriginTokenObtainPairSerializer):
     def validate(self, attrs):
         data: Dict = super().validate(attrs)
         data["email"] = self.user.email
-        # TODO : 프로필 이미지 URL
+        data["is_staff"] = self.user.is_staff
+
         return data
 
 
