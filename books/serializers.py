@@ -7,7 +7,7 @@ class BooksSerializer(serializers.ModelSerializer):
         model=Books
         fields=["cover_photo", "title", "writer",
     "translator", "publisher", "published_date",
-    "ISBN", "story", "state"]
+    "ISBN", "story", "state", "book_num"]
 
 class LoanedBooksSerializer(serializers.ModelSerializer):
     class Meta:
