@@ -31,8 +31,8 @@ class UserCreationSerializer(serializers.ModelSerializer):
         username = validated_data["username"]
         password = validated_data["password"]
         phone_num = validated_data["phone_num"]
-        gender = validated_data.get("gender", None)
-        position = validated_data.get("position", None)
+        gender = validated_data.get("gender", "")
+        position = validated_data.get("position", "")
         birthdate = validated_data.get("birthdate", "1970-01-01")
 
         new_user = User(email=email, username=username, gender=gender, position=position, birthdate=birthdate, phone_num=phone_num)

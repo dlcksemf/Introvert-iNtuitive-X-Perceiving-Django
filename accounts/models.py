@@ -54,7 +54,7 @@ class User(AbstractUser):
         validators=[
             RegexValidator(
                 r"^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$",
-                message="휴대폰번호를 입력해주세요"
+                message="양식에 맞춰 휴대폰번호를 입력해주세요 EX) 010-1234-1234"
             ),
     ],
     help_text="입력예) 010-1234-1234")
