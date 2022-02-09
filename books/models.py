@@ -22,7 +22,7 @@ class Category(TimestampedModel):
 
 
 class Books(TimestampedModel):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
     book_num = models.AutoField(primary_key=True)
     # integerfield 어떻게 쓰는지 확인
 
