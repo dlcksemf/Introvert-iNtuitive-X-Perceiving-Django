@@ -10,7 +10,19 @@ class TimestampedModel(models.Model):
         abstract = True
 
 
+class Category(TimestampedModel):
+    name = models.CharField(max_length=100, primary_key=True)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+    class Meta:
+        ordering = ["name"]
+
+
 class Books(TimestampedModel):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     book_num = models.AutoField(primary_key=True)
     # integerfield 어떻게 쓰는지 확인
 
