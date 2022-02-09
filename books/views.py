@@ -70,6 +70,6 @@ class ApplicationsViewSet(ModelViewSet):
         if self.request.method == "GET":
             return [AllowAny()]
         return [IsAuthenticated()]
-
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+    #
+    # def perform_create(self, serializer):
+    #     serializer.save(author=self.request.user)
