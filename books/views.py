@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import render
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
@@ -9,6 +10,16 @@ from books.serializers import BooksSerializer, LoanedBooksSerializer, WishesSeri
 class BooksViewSet(ModelViewSet):
     queryset = Books.objects.all()
     serializer_class = BooksSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+
+        query = self.request.query_params.get("query", "")
+        conditions = Q(title__icontains=query) | Q(writer__icontains=query)
+        if query:
+            qs = qs.filter(conditions)
+
+        return qs
 
     def get_permissions(self):
         if self.request.method == "GET":
