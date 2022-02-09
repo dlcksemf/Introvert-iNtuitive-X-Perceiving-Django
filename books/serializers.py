@@ -20,7 +20,7 @@ class BooksSerializer(serializers.ModelSerializer):
         translator = validated_data.get("translator", "")
         published_date = validated_data.get("published_date", "")
         story = validated_data.get("story", "")
-        category_id = validated_data.get("category_id", "")
+        category_id = validated_data.get("category_id", None)
 
         new_book = Books(cover_photo=cover_photo, title=title, writer=writer, publisher=publisher, ISBN=ISBN,
                          state=state, translator=translator, published_date=published_date, story=story, category_id=category_id)
