@@ -16,7 +16,6 @@ class Category(TimestampedModel):
     def __str__(self) -> str:
         return self.name
 
-
     class Meta:
         ordering = ["name"]
 
@@ -34,7 +33,7 @@ class Books(TimestampedModel):
     writer = models.CharField(max_length=100, db_index=True)
     translator = models.CharField(max_length=100, blank=True)
     publisher = models.CharField(max_length=100)
-    published_date = models.DateField(blank=True)
+    published_date = models.DateField(blank=True, null=True)
     # 달력 DateField 나오게 하는 방법
     ISBN = models.CharField(max_length=20,db_index=True)
     story = models.TextField(blank=True)

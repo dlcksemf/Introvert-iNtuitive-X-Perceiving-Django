@@ -1,3 +1,4 @@
+
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.core.validators import RegexValidator
 from django.db import models
@@ -65,7 +66,7 @@ class User(AbstractUser):
             ("F", "Female"),
         ],
         blank=True)
-    birthdate = models.DateField(blank=True)
+    birthdate = models.DateField(blank=True, null=True)
     position = models.CharField(max_length=50, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)

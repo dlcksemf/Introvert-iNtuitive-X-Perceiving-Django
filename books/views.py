@@ -27,6 +27,7 @@ class BooksViewSet(ModelViewSet):
     #
     #     return qs
 
+
 class LoanedBooksViewSet(ModelViewSet):
     queryset = LoanedBooks.objects.all()
     serializer_class = LoanedBooksSerializer
@@ -38,6 +39,7 @@ class LoanedBooksViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
 
 class WishesViewSet(ModelViewSet):
     queryset = Wishes.objects.all()
@@ -51,14 +53,15 @@ class WishesViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
+
 class ApplicationsViewSet(ModelViewSet):
     queryset = Applications.objects.all()
     serializer_class = ApplicationsSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(email=self.request.user)
 
     def get_permissions(self):
         if self.request.method == "GET":
             return [AllowAny()]
         return [IsAuthenticated()]
-    #
-    # def perform_create(self, serializer):
-    #     serializer.save(author=self.request.user)

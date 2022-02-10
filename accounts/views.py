@@ -3,7 +3,7 @@ import json
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 from rest_framework import viewsets
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, RetrieveAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import (
     TokenObtainPairView as OriginTokenObtainPairView,
@@ -45,3 +45,8 @@ def User_List(request):
     ]
     json_string = json.dumps(data)
     return HttpResponse(json_string)
+
+
+class UserDetail(RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer

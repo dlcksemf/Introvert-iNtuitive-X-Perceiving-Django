@@ -8,6 +8,8 @@ from rest_framework_simplejwt.serializers import (
     TokenRefreshSerializer as OriginTokenRefreshSerializer,
 )
 
+from books.models import Applications
+
 User = get_user_model()
 
 
@@ -33,7 +35,7 @@ class UserCreationSerializer(serializers.ModelSerializer):
         phone_num = validated_data["phone_num"]
         gender = validated_data.get("gender", "")
         position = validated_data.get("position", "")
-        birthdate = validated_data.get("birthdate", "1970-01-01")
+        birthdate = validated_data.get("birthdate", None)
 
         new_user = User(email=email, username=username, gender=gender, position=position, birthdate=birthdate, phone_num=phone_num)
         new_user.set_password(password)
@@ -58,6 +60,8 @@ class TokenRefreshSerializer(OriginTokenRefreshSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    applications = serializers.PrimaryKeyRelatedField(many=True, queryset=Applications.objects.all())
+
     class Meta:
         model = User
         fields = "__all__"

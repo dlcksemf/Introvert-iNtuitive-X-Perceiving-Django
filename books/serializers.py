@@ -9,17 +9,16 @@ class BooksSerializer(serializers.ModelSerializer):
     "translator", "publisher", "published_date",
     "ISBN", "story", "state", "book_num", "category_id"]
 
-
     def create(self, validated_data):
         title = validated_data["title"]
         writer = validated_data["writer"]
         publisher = validated_data["publisher"]
         ISBN = validated_data["ISBN"]
         state = validated_data["state"]
-        cover_photo = validated_data.get("cover_photo", "")
-        translator = validated_data.get("translator", "")
-        published_date = validated_data.get("published_date", "")
-        story = validated_data.get("story", "")
+        cover_photo = validated_data.get("cover_photo", None)
+        translator = validated_data.get("translator", None)
+        published_date = validated_data.get("published_date", None)
+        story = validated_data.get("story", None)
         category_id = validated_data.get("category_id", None)
 
         new_book = Books(cover_photo=cover_photo, title=title, writer=writer, publisher=publisher, ISBN=ISBN,
@@ -34,12 +33,16 @@ class LoanedBooksSerializer(serializers.ModelSerializer):
         model = LoanedBooks
         fields = "__all__"
 
+
 class WishesSerializer(serializers.ModelSerializer):
     class Meta:
         model=Wishes
         fields="__all__"
 
+
 class ApplicationsSerializer(serializers.ModelSerializer):
+    email = serializers.ReadOnlyField(source='email.email')
+
     class Meta:
         model=Applications
         fields="__all__"
