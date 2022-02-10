@@ -29,14 +29,14 @@ class BooksViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save()
 
-    # def get_queryset(self):
-    #     qs= super().get_queryset()
-    #
-    #     query=self.request.query_params.get("query","")
-    #     if query:
-    #         qs=qs.filter(champion__icontains=query)
-    #
-    #     return qs
+    def get_queryset(self):
+        qs= super().get_queryset()
+
+        query=self.request.query_params.get("query","")
+        if query:
+            qs=qs.filter(title__icontains=query)
+
+        return qs
 
 
 class LoanedBooksViewSet(ModelViewSet):
