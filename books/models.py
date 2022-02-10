@@ -61,7 +61,7 @@ class LoanedBooks(models.Model):
 
     loaned_date = models.DateField(auto_now_add=True)
     return_due_date = models.DateField()
-    returned_date = models.DateField()
+    returned_date = models.DateField(blank=True, null=True)
     return_state = models.CharField(
         max_length=1,
         choices=[

@@ -60,7 +60,6 @@ class TokenRefreshSerializer(OriginTokenRefreshSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    applications = serializers.PrimaryKeyRelatedField(many=True, queryset=Applications.objects.all())
 
     class Meta:
         model = User
