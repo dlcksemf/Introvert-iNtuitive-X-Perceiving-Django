@@ -1,9 +1,9 @@
 from django.db.models import Q
-from django.shortcuts import render
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from books.models import Books, LoanedBooks, Wishes, Applications
+from books.paginations.BookApplicationsPagination import BookApplicationPagination
 from books.serializers import BooksSerializer, LoanedBooksSerializer, WishesSerializer, ApplicationsSerializer
 
 
@@ -68,6 +68,7 @@ class WishesViewSet(ModelViewSet):
 class ApplicationsViewSet(ModelViewSet):
     queryset = Applications.objects.all()
     serializer_class = ApplicationsSerializer
+    pagination_class = BookApplicationPagination
 
     def perform_create(self, serializer):
         serializer.save(email=self.request.user)
