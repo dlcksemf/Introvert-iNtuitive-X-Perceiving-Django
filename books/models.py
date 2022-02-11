@@ -74,6 +74,7 @@ class LoanedBooks(models.Model):
 
     book_name = models.ForeignKey(Books, on_delete=models.CASCADE)
     email = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    username = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["-loan_num"]
