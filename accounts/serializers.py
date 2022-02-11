@@ -1,14 +1,13 @@
 from typing import Dict
-
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 from rest_framework_simplejwt.serializers import (
     TokenObtainPairSerializer as OriginTokenObtainPairSerializer,
     TokenRefreshSerializer as OriginTokenRefreshSerializer,
 )
-
-from books.models import Applications
+from books.serializers import ApplicationsSerializer
 
 User = get_user_model()
 
@@ -22,6 +21,13 @@ class UserCreationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["email", "username", "password", "password2", "gender", "position", "birthdate", "phone_num"]
+        validators = [
+            UniqueTogetherValidator(
+                queryset=User.objects.all(),
+                fields=['phone_num'],
+                message="이미 가입된 휴대폰 번호입니다."
+            )
+        ]
 
     def validate(self, attrs):
         if attrs["password"] != attrs["password2"]:
@@ -51,7 +57,6 @@ class TokenObtainPairSerializer(OriginTokenObtainPairSerializer):
         data["is_staff"] = self.user.is_staff
         data["username"] = self.user.username
 
-
         return data
 
 
@@ -60,7 +65,10 @@ class TokenRefreshSerializer(OriginTokenRefreshSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    applications_set = ApplicationsSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
-        fields = "__all__"
+        fields = ["email", "is_superuser",
+                  "is_staff", "username",
+                  "phone_num", "applications_set"]
