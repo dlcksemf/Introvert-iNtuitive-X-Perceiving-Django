@@ -1,6 +1,8 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from books.models import Books, LoanedBooks, Wishes, Applications
 
+User = get_user_model()
 
 class BooksSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,6 +31,20 @@ class BooksSerializer(serializers.ModelSerializer):
 
 
 class LoanedBooksSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LoanedBooks
+        fields =[
+        "return_due_date",
+        "returned_date",
+        "return_state",
+
+        "book_name",
+        "email",
+        ]
+        depth = 1
+
+
+class LoanedBooksCreationSerializer(serializers.ModelSerializer):
     class Meta:
         model = LoanedBooks
         fields = "__all__"
