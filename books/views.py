@@ -43,20 +43,19 @@ class BooksViewSet(ModelViewSet):
 
 class LoanedBooksViewSet(ModelViewSet):
     queryset = LoanedBooks.objects.all()
-    serializer_class = LoanedBooksSerializer
 
     def get_permissions(self):
         if self.request.method == "GET":
             return [AllowAny()]
         return [IsAuthenticated()]
 
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+    def get_serializer_class(self):
+        method = self.request.method
+        if method == "PUT" or method == "POST" or method == "PATCH":
+            return LoanedBooksCreationSerializer
+        else:
+            return LoanedBooksSerializer
 
-
-class LoanedBooksCreationViewSet(ModelViewSet):
-    queryset = LoanedBooks.objects.all()
-    serializer_class = LoanedBooksCreationSerializer
 
 
 class WishesViewSet(ModelViewSet):
