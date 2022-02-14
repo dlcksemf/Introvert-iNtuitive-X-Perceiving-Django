@@ -53,7 +53,7 @@ class LoanedBooksViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
-   def get_queryset(self):
+    def get_queryset(self):
         qs= super().get_queryset()
 
         query=self.request.query_params.get("query","")
