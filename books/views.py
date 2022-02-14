@@ -60,6 +60,11 @@ class LoanedBooksViewSet(ModelViewSet):
         if query:
             qs=qs.filter(book_name__title__icontains=query)
 
+        return_state = self.request.query_params.get("return_state", "")
+        return_state_conditions = Q(return_state__exact=return_state)
+        if return_state:
+            qs = qs.filter(return_state_conditions)
+
         return qs
 
 class LoanedBooksCreationViewSet(ModelViewSet):
