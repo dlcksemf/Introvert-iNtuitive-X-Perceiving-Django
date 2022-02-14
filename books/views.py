@@ -80,7 +80,27 @@ class ApplicationsViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(email=self.request.user)
 
-    def get_permissions(self):
-        if self.request.method == "GET":
-            return [AllowAny()]
-        return [IsAuthenticated()]
+    # def get_permissions(self):
+    #     if self.request.method == "GET":
+    #         return [AllowAny()]
+    #     return [IsAuthenticated()]
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+
+        query = self.request.query_params.get("query", "")
+        conditions = Q(title__icontains=query) | Q(writer__icontains=query)
+        if query:
+            qs = qs.filter(conditions)
+
+        state = self.request.query_params.get("state", "")
+        state_conditions = Q(state__exact=state)
+        if state:
+            qs = qs.filter(state_conditions)
+
+        email = self.request.query_params.get("email", "")
+        email_conditions = Q(email__exact=email)
+        if email:
+            qs = qs.filter(email_conditions)
+
+        return qs
