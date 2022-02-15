@@ -13,16 +13,6 @@ class BooksViewSet(ModelViewSet):
     queryset = Books.objects.all()
     serializer_class = BooksSerializer
 
-    def get_queryset(self):
-        qs = super().get_queryset()
-
-        query = self.request.query_params.get("query", "")
-        conditions = Q(title__icontains=query) | Q(writer__icontains=query)
-        if query:
-            qs = qs.filter(conditions)
-
-        return qs
-
     def get_permissions(self):
         if self.request.method == "GET":
             return [AllowAny()]
@@ -35,8 +25,9 @@ class BooksViewSet(ModelViewSet):
         qs= super().get_queryset()
 
         query=self.request.query_params.get("query","")
+        conditions = Q(title__icontains=query) | Q(writer__icontains=query)
         if query:
-            qs=qs.filter(title__icontains=query)
+            qs=qs.filter(conditions)
 
         return qs
 
