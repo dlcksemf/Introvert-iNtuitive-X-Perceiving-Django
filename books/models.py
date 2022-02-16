@@ -66,9 +66,9 @@ class LoanedBooks(models.Model):
         max_length=1,
         choices=[
             ("L", "Loaned"),
-            ("R", "Register"),
+            ("P", "Pending"),
             ("R", "Returned"),
-            ("D", "Deleted"),
+            ("O", "Overdue"),
         ]
     )
 

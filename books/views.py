@@ -13,16 +13,6 @@ class BooksViewSet(ModelViewSet):
     queryset = Books.objects.all()
     serializer_class = BooksSerializer
 
-    def get_queryset(self):
-        qs = super().get_queryset()
-
-        query = self.request.query_params.get("query", "")
-        conditions = Q(title__icontains=query) | Q(writer__icontains=query)
-        if query:
-            qs = qs.filter(conditions)
-
-        return qs
-
     def get_permissions(self):
         if self.request.method == "GET":
             return [AllowAny()]
@@ -35,36 +25,41 @@ class BooksViewSet(ModelViewSet):
         qs= super().get_queryset()
 
         query=self.request.query_params.get("query","")
+        conditions = Q(title__icontains=query) | Q(writer__icontains=query)
         if query:
-            qs=qs.filter(title__icontains=query)
+            qs=qs.filter(conditions)
 
         return qs
 
 
 class LoanedBooksViewSet(ModelViewSet):
     queryset = LoanedBooks.objects.all()
-    serializer_class = LoanedBooksSerializer
 
     def get_permissions(self):
         if self.request.method == "GET":
             return [AllowAny()]
         return [IsAuthenticated()]
 
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+    def get_serializer_class(self):
+        method = self.request.method
+        if method == "PUT" or method == "POST" or method == "PATCH":
+            return LoanedBooksCreationSerializer
+        else:
+            return LoanedBooksSerializer
 
-   def get_queryset(self):
+    def get_queryset(self):
         qs= super().get_queryset()
 
         query=self.request.query_params.get("query","")
         if query:
             qs=qs.filter(book_name__title__icontains=query)
 
-        return qs
+        return_state = self.request.query_params.get("return_state", "")
+        return_state_conditions = Q(return_state__exact=return_state)
+        if return_state:
+            qs = qs.filter(return_state_conditions)
 
-class LoanedBooksCreationViewSet(ModelViewSet):
-    queryset = LoanedBooks.objects.all()
-    serializer_class = LoanedBooksCreationSerializer
+        return qs
 
 
 class WishesViewSet(ModelViewSet):
