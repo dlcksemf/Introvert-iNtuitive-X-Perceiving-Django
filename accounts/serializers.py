@@ -7,7 +7,7 @@ from rest_framework_simplejwt.serializers import (
     TokenObtainPairSerializer as OriginTokenObtainPairSerializer,
     TokenRefreshSerializer as OriginTokenRefreshSerializer,
 )
-from books.serializers import ApplicationsSerializer
+from books.serializers import ApplicationsSerializer, LoanedBooksSerializer, WishesSerializer
 
 User = get_user_model()
 
@@ -53,7 +53,7 @@ class UserCreationSerializer(serializers.ModelSerializer):
 class TokenObtainPairSerializer(OriginTokenObtainPairSerializer):
     def validate(self, attrs):
         data: Dict = super().validate(attrs)
-        data["email"] = self.user.email
+        data["user_id"] = self.user.id
         data["is_staff"] = self.user.is_staff
         data["username"] = self.user.username
 
@@ -66,9 +66,11 @@ class TokenRefreshSerializer(OriginTokenRefreshSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     applications_set = ApplicationsSerializer(many=True, read_only=True)
+    loanedbooks_set = LoanedBooksSerializer(many=True, read_only=True)
+    wishes_set = WishesSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
-        fields = ["email", "is_superuser",
-                  "is_staff", "username",
-                  "phone_num", "applications_set"]
+        fields = ["id", "applications_set", "loanedbooks_set", "wishes_set",
+                  "is_staff", "email", "username", "phone_num", "gender",
+                  "birthdate", "position", "created_at", "updated_at"]
