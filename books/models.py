@@ -72,8 +72,8 @@ class LoanedBooks(models.Model):
         ]
     )
 
-    book_name = models.ForeignKey(Books, on_delete=models.CASCADE)
-    email = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    book_name = models.ForeignKey(Books, on_delete=models.CASCADE, related_name='loaned_books')
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["-loan_num"]
@@ -85,7 +85,7 @@ class Wishes(models.Model):
     wish_num = models.AutoField(primary_key=True)
 
     book_name = models.ForeignKey(Books, on_delete=models.CASCADE)
-    email = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["-wish_num"]
@@ -109,7 +109,7 @@ class Applications(TimestampedModel):
         ]
     )
 
-    email = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     objects = models.Manager()
 

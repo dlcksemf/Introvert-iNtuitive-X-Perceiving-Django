@@ -10,14 +10,14 @@ class BooksAdmin(admin.ModelAdmin):
 
 @admin.register(LoanedBooks)
 class LoanedBooksAdmin(admin.ModelAdmin):
-    list_display = ["loan_num", "loaned_date", "return_due_date", "returned_date", "return_state", "book_name", "email"]
+    list_display = ["loan_num", "loaned_date", "return_due_date", "returned_date", "return_state", "book_name", "user_id"]
 
 
 @admin.register(Wishes)
 class WishesAdmin(admin.ModelAdmin):
-    list_display = ["wish_num", "book_name", "email"]
+    list_display = ["wish_num", "book_name", "user_id"]
 
 
 @admin.register(Applications)
 class ApplicationsAdmin(admin.ModelAdmin):
-    list_display = ["application_num", "title", "writer", "publisher", "ISBN", "state", "email"]
+    list_display = ["application_num", "title", "writer", "publisher", "ISBN", "state", "user_id"]

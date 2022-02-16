@@ -44,6 +44,8 @@ class User(AbstractUser):
     last_name = None
     date_joined = None
 
+    user_id = models.AutoField(primary_key=True)
+
     email = models.EmailField(unique=True)
     username = models.CharField(
         max_length=50

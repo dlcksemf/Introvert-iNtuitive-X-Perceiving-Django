@@ -20,7 +20,7 @@ class UserCreationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["email", "username", "password", "password2", "gender", "position", "birthdate", "phone_num"]
+        fields = ["user_id", "email", "username", "password", "password2", "gender", "position", "birthdate", "phone_num"]
         validators = [
             UniqueTogetherValidator(
                 queryset=User.objects.all(),
@@ -53,7 +53,7 @@ class UserCreationSerializer(serializers.ModelSerializer):
 class TokenObtainPairSerializer(OriginTokenObtainPairSerializer):
     def validate(self, attrs):
         data: Dict = super().validate(attrs)
-        data["user_id"] = self.user.id
+        data["user_id"] = self.user.user_id
         data["is_staff"] = self.user.is_staff
         data["username"] = self.user.username
 
@@ -71,6 +71,6 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "applications_set", "loanedbooks_set", "wishes_set",
+        fields = ["user_id", "applications_set", "loanedbooks_set", "wishes_set",
                   "is_staff", "email", "username", "phone_num", "gender",
                   "birthdate", "position", "created_at", "updated_at"]

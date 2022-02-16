@@ -1,44 +1,36 @@
 from django.db.models import Q
-from rest_framework.generics import ListAPIView, RetrieveAPIView
-from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
-from books.models import Books, LoanedBooks, Wishes, Applications
+from books.models import Books, LoanedBooks, Wishes, Applications, Category
 from books.paginations.BookApplicationsPagination import BookApplicationPagination
 from books.serializers import BooksSerializer, LoanedBooksSerializer, WishesSerializer, ApplicationsSerializer, \
-    LoanedBooksCreationSerializer
+    LoanedBooksCreationSerializer, CategorySerializer, CategoryCreationSerializer, WishesCreationSerializer
 
 
 class BooksViewSet(ModelViewSet):
     queryset = Books.objects.all()
     serializer_class = BooksSerializer
-
-    def get_permissions(self):
-        if self.request.method == "GET":
-            return [AllowAny()]
-        return [IsAuthenticated()]
-
-    def perform_create(self, serializer):
-        serializer.save()
+    pagination_class = BookApplicationPagination
 
     def get_queryset(self):
-        qs= super().get_queryset()
+        qs = super().get_queryset()
 
-        query=self.request.query_params.get("query","")
+        query = self.request.query_params.get("query", "")
         conditions = Q(title__icontains=query) | Q(writer__icontains=query)
         if query:
-            qs=qs.filter(conditions)
+            qs = qs.filter(conditions)
+
+        state = self.request.query_params.get("state", "")
+        state_conditions = Q(state__exact=state)
+        if state:
+            qs = qs.filter(state_conditions)
 
         return qs
 
 
 class LoanedBooksViewSet(ModelViewSet):
     queryset = LoanedBooks.objects.all()
-
-    def get_permissions(self):
-        if self.request.method == "GET":
-            return [AllowAny()]
-        return [IsAuthenticated()]
+    pagination_class = BookApplicationPagination
 
     def get_serializer_class(self):
         method = self.request.method
@@ -48,14 +40,14 @@ class LoanedBooksViewSet(ModelViewSet):
             return LoanedBooksSerializer
 
     def get_queryset(self):
-        qs= super().get_queryset()
+        qs = super().get_queryset()
 
         query = self.request.query_params.get("query", "")
-        conditions = Q(book_name_title__icontains=query) | Q(book_name_writer__icontains=query)
+        conditions = Q(book_name__title__icontains=query) | Q(book_name__writer__icontains=query)
         if query:
             qs = qs.filter(conditions)
 
-        return_state = self.request.query_params.get("return_state", "")
+        return_state = self.request.query_params.get("state", "")
         return_state_conditions = Q(return_state__exact=return_state)
         if return_state:
             qs = qs.filter(return_state_conditions)
@@ -63,26 +55,58 @@ class LoanedBooksViewSet(ModelViewSet):
         return qs
 
 
+class CategoryViewSet(ModelViewSet):
+    queryset = Category.objects.all()
+
+    def get_serializer_class(self):
+        method = self.request.method
+        if method == 'PUT' or method == 'POST':
+            return CategoryCreationSerializer
+        else:
+            return CategorySerializer
+
+
 class WishesViewSet(ModelViewSet):
     queryset = Wishes.objects.all()
-    serializer_class = WishesSerializer
+    pagination_class = BookApplicationPagination
 
-    def get_permissions(self):
-        if self.request.method == "GET":
-            return [AllowAny()]
-        return [IsAuthenticated()]
+    # def get_permissions(self):
+    #     if self.request.method == "GET":
+    #         return [AllowAny()]
+    #     return [IsAuthenticated()]
 
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+    def get_serializer_class(self):
+        method = self.request.method
+        if method == 'PUT' or method == 'POST':
+            return WishesCreationSerializer
+        else:
+            return WishesSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+
+        query = self.request.query_params.get("query", "")
+        conditions = Q(book_name__title__icontains=query) | Q(book_name__writer__icontains=query)
+        if query:
+            qs = qs.filter(conditions)
+
+        state = self.request.query_params.get("state", "")
+        state_conditions = Q(book_name__loaned_books__return_state__exact=state)
+        if state:
+            qs = qs.filter(state_conditions)
+
+        user_id = self.request.query_params.get("user_id", "")
+        user_id_conditions = Q(user_id__exact=user_id)
+        if user_id:
+            qs = qs.filter(user_id_conditions)
+
+        return qs
 
 
 class ApplicationsViewSet(ModelViewSet):
     queryset = Applications.objects.all()
     serializer_class = ApplicationsSerializer
     pagination_class = BookApplicationPagination
-
-    def perform_create(self, serializer):
-        serializer.save(email=self.request.user)
 
     # def get_permissions(self):
     #     if self.request.method == "GET":
@@ -102,9 +126,9 @@ class ApplicationsViewSet(ModelViewSet):
         if state:
             qs = qs.filter(state_conditions)
 
-        email = self.request.query_params.get("email", "")
-        email_conditions = Q(email__exact=email)
-        if email:
-            qs = qs.filter(email_conditions)
+        user_id = self.request.query_params.get("user_id", "")
+        user_id_conditions = Q(user_id__exact=user_id)
+        if user_id:
+            qs = qs.filter(user_id_conditions)
 
         return qs
