@@ -50,9 +50,10 @@ class LoanedBooksViewSet(ModelViewSet):
     def get_queryset(self):
         qs= super().get_queryset()
 
-        query=self.request.query_params.get("query","")
+        query = self.request.query_params.get("query", "")
+        conditions = Q(book_name_title__icontains=query) | Q(book_name_writer__icontains=query)
         if query:
-            qs=qs.filter(book_name__title__icontains=query)
+            qs = qs.filter(conditions)
 
         return_state = self.request.query_params.get("return_state", "")
         return_state_conditions = Q(return_state__exact=return_state)

@@ -31,13 +31,17 @@ class BooksSerializer(serializers.ModelSerializer):
 
 
 class LoanedBooksSerializer(serializers.ModelSerializer):
+    return_due_date = serializers.DateField()
+    returned_date = serializers.DateField(allow_null=True)
+    return_state = serializers.CharField()
+
     class Meta:
         model = LoanedBooks
         fields =[
         "return_due_date",
         "returned_date",
         "return_state",
-
+        "loan_num",
         "book_name",
         "email",
         ]
