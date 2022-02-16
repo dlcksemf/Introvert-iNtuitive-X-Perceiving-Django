@@ -26,7 +26,6 @@ class CustomUserManager(UserManager):
 
         user = self.create_user(
             email,
-            birthdate="1970-01-01",
             password=password,
             **extra_fields
         )
@@ -45,7 +44,7 @@ class User(AbstractUser):
     last_name = None
     date_joined = None
 
-    email = models.EmailField(primary_key=True)
+    email = models.EmailField(unique=True)
     username = models.CharField(
         max_length=50
     )
