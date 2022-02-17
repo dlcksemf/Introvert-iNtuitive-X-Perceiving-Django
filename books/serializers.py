@@ -6,42 +6,15 @@ from books.models import Books, LoanedBooks, Wishes, Applications, Category
 User = get_user_model()
 
 
-class LoanedBooksSerializer(serializers.ModelSerializer):
-    return_due_date = serializers.DateField()
-    returned_date = serializers.DateField(allow_null=True)
-    return_state = serializers.CharField()
+class UserListingField(serializers.RelatedField):
+    def to_representation(self, value):
+        user_id = value.user_id
+        username = value.username
 
-    class Meta:
-        model = LoanedBooks
-        fields =[
-            "loan_num",
-            "return_due_date",
-            "returned_date",
-            "return_state",
-            'loaned_date',
-
-            "user_id",
-            "book_name",
-        ]
-        depth = 1
-
-    def to_representation(self, obj):
-        representation = super().to_representation(obj)
-        book_name_representation = representation.pop('book_name')
-        for key in book_name_representation:
-            representation[key] = book_name_representation[key]
-
-        return representation
-
-    def to_internal_value(self, data):
-        book_name_internal = {}
-        for key in BooksSerializer.Meta.fields:
-            if key in data:
-                book_name_internal[key] = data.pop(key)
-
-        internal = super().to_internal_value(data)
-        internal['book_name'] = book_name_internal
-        return internal
+        return {
+            "user_id" : user_id,
+            "username": username
+        }
 
 
 class BookListingField(serializers.RelatedField):
@@ -60,10 +33,6 @@ class BookListingField(serializers.RelatedField):
 
 
 class BooksSerializer(serializers.ModelSerializer):
-    # loaned_books = LoanedBooks.objects \
-    #     .order_by('-loaned_date') \
-    #     .distinct('loan_num') \
-    #     .values_list('loaned_date', flat=True)
     loaned_books = BookListingField(many=True, read_only=True)
 
     class Meta:
@@ -112,10 +81,64 @@ class CategoryCreationSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class LoanedBooksSerializer(serializers.ModelSerializer):
+    book_name = BooksSerializer()
+    user_id = UserListingField(read_only=True)
+
+    class Meta:
+        model = LoanedBooks
+        fields = [
+            "user_id",
+            "book_name",
+
+            "loan_num",
+            "return_due_date",
+            "returned_date",
+            "return_state",
+            'loaned_date',
+        ]
+
+    def to_representation(self, obj):
+        representation = super().to_representation(obj)
+
+        book_name_representation = representation.pop('book_name')
+        for key in book_name_representation:
+            representation[key] = book_name_representation[key]
+
+        user_id_representation = representation.pop('user_id')
+        representation["user_id"] = user_id_representation["user_id"]
+        representation["username"] = user_id_representation["username"]
+
+        return representation
+
+
 class LoanedBooksCreationSerializer(serializers.ModelSerializer):
     class Meta:
         model = LoanedBooks
-        fields = "__all__"
+        fields = ["return_due_date", "book_name", "user_id", "return_state"]
+
+    def create(self, validated_data):
+        loaned_books = LoanedBooks.objects.create(**validated_data)
+        loaned_books.return_state = "L"
+        loaned_books.save()
+
+        book = validated_data["book_name"]
+
+        book.state = "B"
+        book.save()
+
+        return loaned_books
+
+    def update(self, instance, validated_data):
+        super().update(instance, validated_data)
+
+        book = instance.book_name
+
+        if "return_state" in validated_data:
+            book.state = "A"
+            book.save()
+
+        return instance
 
 
 class WishesCreationSerializer(serializers.ModelSerializer):
