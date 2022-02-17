@@ -25,6 +25,11 @@ class BooksViewSet(ModelViewSet):
         if state:
             qs = qs.filter(state_conditions)
 
+        category = self.request.query_params.get("category", "")
+        category_conditions = Q(category__exact=category)
+        if category:
+            qs = qs.filter(category_conditions)
+
         return qs
 
 
@@ -95,10 +100,15 @@ class WishesViewSet(ModelViewSet):
         if state:
             qs = qs.filter(state_conditions)
 
-        user_id = self.request.query_params.get("user_id", "")
+        user_id = self.request.query_params.get("user", "")
         user_id_conditions = Q(user_id__exact=user_id)
         if user_id:
             qs = qs.filter(user_id_conditions)
+
+        book_num = self.request.query_params.get("book", "")
+        book_conditions = Q(book_name__exact=book_num)
+        if book_num:
+            qs = qs.filter(book_conditions)
 
         return qs
 
