@@ -60,6 +60,10 @@ class BookListingField(serializers.RelatedField):
 
 
 class BooksSerializer(serializers.ModelSerializer):
+    # loaned_books = LoanedBooks.objects \
+    #     .order_by('-loaned_date') \
+    #     .distinct('loan_num') \
+    #     .values_list('loaned_date', flat=True)
     loaned_books = BookListingField(many=True, read_only=True)
 
     class Meta:
