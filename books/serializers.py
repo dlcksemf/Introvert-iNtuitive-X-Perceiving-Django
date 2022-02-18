@@ -21,13 +21,11 @@ class BookListingField(serializers.RelatedField):
     def to_representation(self, value):
         loaned_date = value.loaned_date
         return_due_date = value.return_due_date
-        returned_date = value.returned_date
         return_state = value.return_state
 
         return {
             "loaned_date": loaned_date,
             "return_due_date": return_due_date,
-            "returned_date": returned_date,
             "return_state": return_state
         }
 
@@ -38,8 +36,10 @@ class BooksSerializer(serializers.ModelSerializer):
     class Meta:
         model=Books
         fields=["book_num", "cover_photo", "title", "writer",
-    "translator", "publisher", "published_date",
-    "ISBN", "story", "state", "category", "loaned_books"]
+                "translator", "publisher", "published_date",
+                "ISBN", "story", "state", "category",
+                "loaned_books", "wishes_set", "loan_count"]
+        depth=1
 
     def create(self, validated_data):
         title = validated_data["title"]
@@ -58,6 +58,8 @@ class BooksSerializer(serializers.ModelSerializer):
         new_book.save()
 
         return new_book
+
+
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -149,6 +151,7 @@ class WishesCreationSerializer(serializers.ModelSerializer):
 
 class WishesSerializer(serializers.ModelSerializer):
     book_name = BooksSerializer(read_only=True)
+    user_id = UserListingField(read_only=True)
 
     class Meta:
         model=Wishes
@@ -159,6 +162,10 @@ class WishesSerializer(serializers.ModelSerializer):
         book_name_representation = representation.pop('book_name')
         for key in book_name_representation:
             representation[key] = book_name_representation[key]
+
+        user_id_representation = representation.pop('user_id')
+        representation["user_id"] = user_id_representation["user_id"]
+        representation["username"] = user_id_representation["username"]
 
         return representation
 
