@@ -119,7 +119,8 @@ class LoanedBooksSerializer(serializers.ModelSerializer):
 
         book_name_representation = representation.pop('book_name')
         for key in book_name_representation:
-            representation[key] = book_name_representation[key]
+            if (key != "wishes_set" and key != "count_loans" and key != "loaned_books"):
+                representation[key] = book_name_representation[key]
 
         user_id_representation = representation.pop('user_id')
         representation["user_id"] = user_id_representation["user_id"]
