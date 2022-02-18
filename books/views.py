@@ -12,8 +12,6 @@ class BooksViewSet(ModelViewSet):
     queryset = Books.objects.all()
     serializer_class = BooksSerializer
     pagination_class = BookApplicationPagination
-    filter_backends = [filters.OrderingFilter]
-    ordering_fields = ['loaned_books']
 
     def get_queryset(self):
         qs = super().get_queryset()

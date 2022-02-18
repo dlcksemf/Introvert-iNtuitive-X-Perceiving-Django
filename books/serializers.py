@@ -45,12 +45,13 @@ class LoanCount(serializers.RelatedField):
 
 class BooksSerializer(serializers.ModelSerializer):
     loaned_books = BookListingField(many=True, read_only=True)
+    count_loans = serializers.SerializerMethodField()
 
     class Meta:
         model=Books
         fields=["book_num", "cover_photo", "title", "writer",
     "translator", "publisher", "published_date",
-    "ISBN", "story", "state", "category", "loaned_books", "wishes_set"]
+    "ISBN", "story", "state", "category", "loaned_books", "wishes_set", "count_loans"]
         # depth=1
 
     def create(self, validated_data):
@@ -70,6 +71,9 @@ class BooksSerializer(serializers.ModelSerializer):
         new_book.save()
 
         return new_book
+
+    def get_count_loans(self, instance):
+        return instance.loaned_books.count()
 
 
 class CategorySerializer(serializers.ModelSerializer):
