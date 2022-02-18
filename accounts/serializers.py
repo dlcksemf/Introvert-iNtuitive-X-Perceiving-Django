@@ -68,9 +68,13 @@ class UserSerializer(serializers.ModelSerializer):
     applications_set = ApplicationsSerializer(many=True, read_only=True)
     loanedbooks_set = LoanedBooksSerializer(many=True, read_only=True)
     wishes_set = WishesSerializer(many=True, read_only=True)
+    count_loans = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         fields = ["user_id", "applications_set", "loanedbooks_set", "wishes_set",
                   "is_staff", "email", "username", "phone_num", "gender",
-                  "birthdate", "position", "created_at", "updated_at"]
+                  "birthdate", "position", "created_at", "updated_at", "count_loans"]
+
+    def get_count_loans(self, instance):
+        return instance.loanedbooks_set.count()
