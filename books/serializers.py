@@ -46,13 +46,14 @@ class LoanCount(serializers.RelatedField):
 class BooksSerializer(serializers.ModelSerializer):
     loaned_books = BookListingField(many=True, read_only=True)
     count_loans = serializers.SerializerMethodField()
+    return_due_date = serializers.SerializerMethodField()
 
     class Meta:
         model=Books
         fields=["book_num", "cover_photo", "title", "writer",
-    "translator", "publisher", "published_date",
-    "ISBN", "story", "state", "category", "loaned_books", "wishes_set", "count_loans"]
-        # depth=1
+                "translator", "publisher", "published_date",
+                "ISBN", "story", "state", "category", "loaned_books",
+                "count_loans", "return_due_date"]
 
     def create(self, validated_data):
         title = validated_data["title"]
@@ -74,6 +75,10 @@ class BooksSerializer(serializers.ModelSerializer):
 
     def get_count_loans(self, instance):
         return instance.loaned_books.count()
+
+    def get_return_due_date(self, instance):
+        if instance.state != "A":
+            return instance.loaned_books.first().return_due_date
 
 
 class CategorySerializer(serializers.ModelSerializer):
