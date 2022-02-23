@@ -1,3 +1,5 @@
+from collections import Counter
+from datetime import timedelta, date
 from typing import Dict
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
@@ -7,7 +9,9 @@ from rest_framework_simplejwt.serializers import (
     TokenObtainPairSerializer as OriginTokenObtainPairSerializer,
     TokenRefreshSerializer as OriginTokenRefreshSerializer,
 )
-from books.serializers import ApplicationsSerializer, LoanedBooksSerializer, WishesSerializer
+
+from books.models import LoanedBooks
+from books.serializers import LoanedBooksSerializer, ApplicationsSerializer, WishesSerializer
 
 User = get_user_model()
 
@@ -69,12 +73,45 @@ class UserSerializer(serializers.ModelSerializer):
     loanedbooks_set = LoanedBooksSerializer(many=True, read_only=True)
     wishes_set = WishesSerializer(many=True, read_only=True)
     count_loans = serializers.SerializerMethodField()
+    loaned_dates = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         fields = ["user_id", "applications_set", "loanedbooks_set", "wishes_set",
                   "is_staff", "email", "username", "phone_num", "gender",
-                  "birthdate", "position", "created_at", "updated_at", "count_loans"]
+                  "birthdate", "position", "created_at", "updated_at",
+                  "count_loans", "loaned_dates"]
 
     def get_count_loans(self, instance):
         return instance.loanedbooks_set.count()
+
+    def get_loaned_dates(self, instance):
+        def date_range(start, end):
+            delta = end - start  # as timedelta
+            days = [start + timedelta(days=i) for i in range(delta.days + 1)]
+            return days
+
+        date_list = []
+
+        try:
+            loaned_dates = LoanedBooks.objects.all().filter(user_id=instance.user_id)
+        except LoanedBooks.DoesNotExist:
+            loaned_dates = []
+
+        if loaned_dates:
+            for loandate in loaned_dates:
+                if loandate.returned_date:
+                    return_date = loandate.returned_date
+                else:
+                    return_date = date.today()
+
+                for dates in date_range(loandate.loaned_date, return_date):
+                    for i in range(len(date_list)):
+                        if date_list[i]["day"] == dates:
+                            date_list[i]["value"] += 1
+
+                    date_list.append({'day': dates, "value": 1})
+
+
+
+        return date_list
