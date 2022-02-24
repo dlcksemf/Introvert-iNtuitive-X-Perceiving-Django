@@ -87,16 +87,16 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_loaned_dates(self, instance):
         def date_range(start, end):
-            delta = end - start  # as timedelta
+            delta = end - start
             days = [start + timedelta(days=i) for i in range(delta.days + 1)]
             return days
-
-        date_list = []
 
         try:
             loaned_dates = LoanedBooks.objects.all().filter(user_id=instance.user_id)
         except LoanedBooks.DoesNotExist:
             loaned_dates = []
+
+        dates = Counter()
 
         if loaned_dates:
             for loandate in loaned_dates:
@@ -105,13 +105,6 @@ class UserSerializer(serializers.ModelSerializer):
                 else:
                     return_date = date.today()
 
-                for dates in date_range(loandate.loaned_date, return_date):
-                    for i in range(len(date_list)):
-                        if date_list[i]["day"] == dates:
-                            date_list[i]["value"] += 1
+                dates.update(str(rkskek) for rkskek in date_range(loandate.loaned_date, return_date))
 
-                    date_list.append({'day': dates, "value": 1})
-
-
-
-        return date_list
+        return [ { 'day': key, 'value': value } for (key, value) in dates.items()]
