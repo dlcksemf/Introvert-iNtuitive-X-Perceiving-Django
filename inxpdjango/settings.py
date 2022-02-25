@@ -11,20 +11,27 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 from datetime import timedelta
 from pathlib import Path
+from environ import Env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+env = Env()
+
+dot_env_path = BASE_DIR / ".env"
+if dot_env_path.exists():
+    with dot_env_path.open(encoding="utf-8") as f:
+        env.read_env(f, overwrite=True)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-nqbr96#5^5o7^y*_gv!df3zc_xq1fjgu!+sr%zh5!0wc2od61b'
-
+SECRET_KEY = env.str("SECRET_KEY",default="----SECRET KEY----")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG',default=False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS",default=[])
 
 # Application definition
 
@@ -82,15 +89,13 @@ WSGI_APPLICATION = 'inxpdjango.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',  # mysqlclient librarly 설치
-        'NAME': 'INXPdb',
-        'USER': 'root',
-        'PASSWORD': '1234',  # mariaDB 설치 시 입력한 root 비밀번호 입력
-        'HOST': 'localhost',
-        'PORT': ''
-    }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
+    'default': env.db(default=f'sqlite:///{BASE_DIR / "db.sqlite3"}'),
 }
+
 
 AUTH_USER_MODEL = 'accounts.User'
 
@@ -136,11 +141,15 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # django-cors-headers
 # https://github.com/adamchainz/django-cors-headers
 
-CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
-
+CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS",
+                                default=["http://localhost:3000"])
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+ACCESS_TOKEN_LIFETIME_DAYS=env.int("ACCESS_TOKEN_LIFETIME_DAYS",default=7)
+ACCESS_TOKEN_LIFETIME_HOURS=env.int("ACCESS_TOKEN_LIFETIME_HOURS",default=0)
+ACCESS_TOKEN_LIFETIME_MINUTES=env.int("ACCESS_TOKEN_LIFETIME_MINUTES",default=0)
 
 # djangorestframwork
 # DRF의 디폴트 설정을 재정의합니다.
@@ -155,5 +164,8 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     'USER_ID_FIELD': 'user_id',
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
+    'ACCESS_TOKEN_LIFETIME': timedelta(
+        days=ACCESS_TOKEN_LIFETIME_DAYS,
+        hours=ACCESS_TOKEN_LIFETIME_HOURS,
+        minutes=ACCESS_TOKEN_LIFETIME_MINUTES,),
 }
