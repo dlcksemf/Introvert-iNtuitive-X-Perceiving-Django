@@ -12,11 +12,11 @@ class BooksViewSet(ModelViewSet):
     queryset = Books.objects.all()
     serializer_class = BooksSerializer
     pagination_class = BookApplicationPagination
-
-    def get_permissions(self):
-        if self.request.method == "GET":
-            return [AllowAny()]
-        return [IsAdminUser()]
+    #
+    # def get_permissions(self):
+    #     if self.request.method == "GET":
+    #         return [AllowAny()]
+    #     return [IsAdminUser()]
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -69,10 +69,10 @@ class LoanedBooksViewSet(ModelViewSet):
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
 
-    def get_permissions(self):
-        if self.request.method == "GET":
-            return [AllowAny()]
-        return [IsAdminUser()]
+    # def get_permissions(self):
+    #     if self.request.method == "GET":
+    #         return [AllowAny()]
+    #     return [IsAdminUser()]
 
     def get_serializer_class(self):
         method = self.request.method
