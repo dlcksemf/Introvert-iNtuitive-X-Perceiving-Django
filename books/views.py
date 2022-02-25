@@ -1,5 +1,5 @@
 from django.db.models import Q
-from rest_framework import filters
+from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.viewsets import ModelViewSet
 
 from books.models import Books, LoanedBooks, Wishes, Applications, Category
@@ -12,6 +12,11 @@ class BooksViewSet(ModelViewSet):
     queryset = Books.objects.all()
     serializer_class = BooksSerializer
     pagination_class = BookApplicationPagination
+
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [AllowAny()]
+        return [IsAdminUser()]
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -64,6 +69,11 @@ class LoanedBooksViewSet(ModelViewSet):
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
 
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [AllowAny()]
+        return [IsAdminUser()]
+
     def get_serializer_class(self):
         method = self.request.method
         if method == 'PUT' or method == 'POST':
@@ -75,11 +85,6 @@ class CategoryViewSet(ModelViewSet):
 class WishesViewSet(ModelViewSet):
     queryset = Wishes.objects.all()
     pagination_class = BookApplicationPagination
-
-    # def get_permissions(self):
-    #     if self.request.method == "GET":
-    #         return [AllowAny()]
-    #     return [IsAuthenticated()]
 
     def get_serializer_class(self):
         method = self.request.method
@@ -118,11 +123,6 @@ class ApplicationsViewSet(ModelViewSet):
     queryset = Applications.objects.all()
     serializer_class = ApplicationsSerializer
     pagination_class = BookApplicationPagination
-
-    # def get_permissions(self):
-    #     if self.request.method == "GET":
-    #         return [AllowAny()]
-    #     return [IsAuthenticated()]
 
     def get_queryset(self):
         qs = super().get_queryset()

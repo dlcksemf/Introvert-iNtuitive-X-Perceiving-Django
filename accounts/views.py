@@ -9,6 +9,7 @@ from rest_framework_simplejwt.views import (
 )
 from accounts.serializers import TokenObtainPairSerializer, UserCreationSerializer, UserSerializer
 from books.paginations.BookApplicationsPagination import BookApplicationPagination
+from books.permissions import IsOwnerOrReadOnly
 
 User = get_user_model()
 
@@ -31,6 +32,7 @@ class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     pagination_class = BookApplicationPagination
+    # permission_classes = [IsOwnerOrReadOnly]
 
     def get_queryset(self):
         qs = super().get_queryset()
