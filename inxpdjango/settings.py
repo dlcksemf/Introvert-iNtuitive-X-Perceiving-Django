@@ -27,9 +27,9 @@ if dot_env_path.exists():
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.str("SECRET_KEY",default="----SECRET KEY----")
+SECRET_KEY = env.str("SECRET_KEY",default='django-insecure-nqbr96#5^5o7^y*_gv!df3zc_xq1fjgu!+sr%zh5!0wc2od61b')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DEBUG',default=False)
+DEBUG = env.bool('DEBUG',default=True)
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS",default=[])
 
@@ -87,15 +87,22 @@ WSGI_APPLICATION = 'inxpdjango.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+try:
+    conn = env.db()
+except:
+   conn = {
+                'ENGINE': 'django.db.backends.mysql',  # mysqlclient librarly 설치
+                'NAME': 'INXPdb',
+                'USER': 'root',
+                'PASSWORD': '1234',  # mariaDB 설치 시 입력한 root 비밀번호 입력
+                'HOST': 'localhost',
+                'PORT': ''
+        }
+
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
-    'default': env.db(default=f'sqlite:///{BASE_DIR / "db.sqlite3"}'),
+    'default': conn
 }
-
 
 AUTH_USER_MODEL = 'accounts.User'
 
