@@ -77,7 +77,7 @@ class BooksSerializer(serializers.ModelSerializer):
         return instance.loaned_books.count()
 
     def get_return_due_date(self, instance):
-        if instance.state != "A":
+        if instance.state == "B" or instance.state == "P":
             return instance.loaned_books.first().return_due_date
 
 
@@ -156,7 +156,7 @@ class LoanedBooksCreationSerializer(serializers.ModelSerializer):
 
         book = instance.book_name
 
-        if "return_state" in validated_data:
+        if validated_data["return_state"] == "R":
             book.state = "A"
             book.save()
 
