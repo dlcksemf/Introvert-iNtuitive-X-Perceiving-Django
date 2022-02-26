@@ -58,6 +58,11 @@ class LoanedBooksViewSet(ModelViewSet):
         if query:
             qs = qs.filter(conditions)
 
+        user_id = self.request.query_params.get("user_id", "")
+        user_id_conditions = Q(user_id__exact=user_id)
+        if user_id:
+            qs = qs.filter(user_id_conditions)
+
         return_state = self.request.query_params.get("state", "")
         return_state_conditions = Q(return_state__exact=return_state)
         if return_state:
@@ -106,7 +111,7 @@ class WishesViewSet(ModelViewSet):
         if state:
             qs = qs.filter(state_conditions)
 
-        user_id = self.request.query_params.get("user", "")
+        user_id = self.request.query_params.get("user_id", "")
         user_id_conditions = Q(user_id__exact=user_id)
         if user_id:
             qs = qs.filter(user_id_conditions)
