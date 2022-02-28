@@ -107,7 +107,7 @@ class WishesViewSet(ModelViewSet):
             qs = qs.filter(conditions)
 
         state = self.request.query_params.get("state", "")
-        state_conditions = Q(book_name__loaned_books__return_state__exact=state)
+        state_conditions = Q(book_name__state__exact=state)
         if state:
             qs = qs.filter(state_conditions)
 
