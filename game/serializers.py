@@ -9,11 +9,12 @@ class GameSerializer(serializers.ModelSerializer):
         fields = ["game_num", "game_name", "player_num","play_time",
                   "level","game_rule"]
 
-class LanedGameSerializer(serializers.ModelSerializer):
+class LoanedGameSerializer(serializers.ModelSerializer):
     class Meta:
         model=LoanedGame
         fields=[
             "loan_game_num",
+            "loaned_time",
             "return_due_time",
             "returned_time",
             "return_state",

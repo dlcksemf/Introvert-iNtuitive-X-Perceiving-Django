@@ -5,7 +5,8 @@ from rest_framework.viewsets import ModelViewSet
 from books.models import Books, LoanedBooks, Wishes, Applications, Category, Review
 from books.paginations.BookApplicationsPagination import BookApplicationPagination
 from books.serializers import BooksSerializer, LoanedBooksSerializer, WishesSerializer, ApplicationsSerializer, \
-    LoanedBooksCreationSerializer, CategorySerializer, CategoryCreationSerializer, WishesCreationSerializer
+    LoanedBooksCreationSerializer, CategorySerializer, CategoryCreationSerializer, WishesCreationSerializer, \
+    ReviewSerializer
 
 
 class BooksViewSet(ModelViewSet):
@@ -151,6 +152,7 @@ class ApplicationsViewSet(ModelViewSet):
 
 class ReviewViewSet(ModelViewSet):
     queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
 
     def get_queryset(self):
         qs=super().get_queryset()
@@ -159,3 +161,5 @@ class ReviewViewSet(ModelViewSet):
         conditions = Q(name__icontains=query)
         if query:
             qs = qs.filter(conditions)
+
+        return qs

@@ -9,4 +9,4 @@ class GameAdmin(admin.ModelAdmin):
 
 @admin.register(LoanedGame)
 class LoanedGameAdmin(admin.ModelAdmin):
-    list_display = ["loan_game_num","laned_time","return_due_time","returned_time","return_state","user_id","game_name"]
+    list_display = ["loan_game_num","loaned_time","return_due_time","returned_time","return_state","user_id","game_name"]

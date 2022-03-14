@@ -3,12 +3,12 @@ from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
 
 from game.models import Game, LoanedGame
-from game.serializers import GameSerializer
+from game.serializers import GameSerializer,LoanedGameSerializer
 
 
 class GameViewSet(ModelViewSet):
     queryset=Game.objects.all()
-    serializerr_class=GameSerializer
+    serializer_class=GameSerializer
 
     def get_query(self):
         qs=super().get_queryset()
@@ -18,7 +18,10 @@ class GameViewSet(ModelViewSet):
         if query:
             qs = qs.filter(conditions)
 
+        return qs
+
 class LoanedGameViewSet(ModelViewSet):
+    serializer_class = LoanedGameSerializer
     queryset=LoanedGame.objects.all()
 
     # def get_serializer_class(self):
@@ -35,3 +38,5 @@ class LoanedGameViewSet(ModelViewSet):
         conditions = Q(game_name__icontains=query)
         if query:
             qs = qs.filter(conditions)
+
+        return qs
