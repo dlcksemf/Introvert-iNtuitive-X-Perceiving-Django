@@ -80,7 +80,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["user_id", "applications_set", "loanedbooks_set", "wishes_set",
                   "is_staff", "email", "username", "phone_num", "gender",
                   "birthdate", "position", "created_at", "updated_at",
-                  "count_loans", "loaned_dates"]
+                  "count_loans", "loaned_dates","department","point"]
 
     def get_count_loans(self, instance):
         return instance.loanedbooks_set.count()

@@ -10,7 +10,7 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('username', 'password', 'email', 'phone_num')
         }),
         ('Personal info', {
-            'fields': ('gender', 'birthdate', 'position')
+            'fields': ('gender', 'birthdate', 'position',"department")
         }),
         # ('Important dates', {
         #     'fields': ('last_login', 'created_at', 'updated_at')
@@ -20,4 +20,4 @@ class CustomUserAdmin(UserAdmin):
         }),
     )
 
-    list_display = ('email', 'username', 'is_active', 'gender', 'birthdate', 'position', 'phone_num')
+    list_display = ('email', 'username', 'is_active', 'gender', 'birthdate', 'position', 'phone_num',"department","point")
