@@ -10,7 +10,7 @@ class GameViewSet(ModelViewSet):
     queryset=Game.objects.all()
     serializer_class=GameSerializer
 
-    def get_query(self):
+    def get_queryset(self):
         qs=super().get_queryset()
 
         query = self.request.query_params.get("query", "")

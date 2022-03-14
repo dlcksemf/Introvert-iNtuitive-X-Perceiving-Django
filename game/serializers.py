@@ -7,7 +7,7 @@ class GameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Game
         fields = ["game_num", "game_name", "player_num","play_time",
-                  "level","game_rule"]
+                  "level","game_rule","game_cover_photo"]
 
 class LoanedGameSerializer(serializers.ModelSerializer):
     class Meta:
