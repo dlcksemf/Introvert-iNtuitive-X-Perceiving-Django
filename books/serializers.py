@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from books.models import Books, LoanedBooks, Wishes, Applications, Category
+from books.models import Books, LoanedBooks, Wishes, Applications, Category, Review
 
 User = get_user_model()
 
@@ -204,3 +204,8 @@ class ApplicationsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Applications
         fields = "__all__"
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Review
+        fields="__all__"

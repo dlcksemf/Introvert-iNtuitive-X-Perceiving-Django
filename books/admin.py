@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from books.models import Books, LoanedBooks, Wishes, Applications
+from books.models import Books, LoanedBooks, Wishes, Applications, Review
 
 
 @admin.register(Books)
@@ -21,3 +21,7 @@ class WishesAdmin(admin.ModelAdmin):
 @admin.register(Applications)
 class ApplicationsAdmin(admin.ModelAdmin):
     list_display = ["application_num", "title", "writer", "publisher", "ISBN", "state", "user_id"]
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ["review_num","review_content","user_id"]

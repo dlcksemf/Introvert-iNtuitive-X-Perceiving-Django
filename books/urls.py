@@ -11,6 +11,7 @@ router.register("loanedbooks", views.LoanedBooksViewSet)
 router.register("wishes", views.WishesViewSet)
 router.register("applications", views.ApplicationsViewSet)
 router.register("category", views.CategoryViewSet)
+router.register("review", views.ReviewViewSet)
 
 
 urlpatterns = [

@@ -2,7 +2,7 @@ from django.db.models import Q
 from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.viewsets import ModelViewSet
 
-from books.models import Books, LoanedBooks, Wishes, Applications, Category
+from books.models import Books, LoanedBooks, Wishes, Applications, Category, Review
 from books.paginations.BookApplicationsPagination import BookApplicationPagination
 from books.serializers import BooksSerializer, LoanedBooksSerializer, WishesSerializer, ApplicationsSerializer, \
     LoanedBooksCreationSerializer, CategorySerializer, CategoryCreationSerializer, WishesCreationSerializer
@@ -148,3 +148,14 @@ class ApplicationsViewSet(ModelViewSet):
             qs = qs.filter(user_id_conditions)
 
         return qs
+
+class ReviewViewSet(ModelViewSet):
+    queryset = Review.objects.all()
+
+    def get_queryset(self):
+        qs=super().get_queryset()
+
+        query = self.request.query_params.get("query", "")
+        conditions = Q(name__icontains=query)
+        if query:
+            qs = qs.filter(conditions)

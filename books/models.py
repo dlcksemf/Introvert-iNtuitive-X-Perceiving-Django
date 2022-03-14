@@ -121,3 +121,13 @@ class Applications(TimestampedModel):
         verbose_name="도서 신청"
         verbose_name_plural="도서 신청 목록"
 
+class Review(TimestampedModel):
+    review_num=models.AutoField(primary_key=True)
+    review_content=models.CharField(max_length=100,db_index=True)
+
+    user_id=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+
+    class Meta:
+        ordering=["-review_num"]
+        verbose_name="리뷰"
+        verbose_name_plural="리뷰 목록"
