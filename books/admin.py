@@ -24,4 +24,4 @@ class ApplicationsAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ["review_num","review_content","user_id"]
+    list_display = ["review_num","user_id","review_content","review_rate"]
