@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.core.validators import MaxValueValidator
 
 
 class TimestampedModel(models.Model):
@@ -124,6 +125,11 @@ class Applications(TimestampedModel):
 class Review(TimestampedModel):
     review_num=models.AutoField(primary_key=True)
     review_content=models.CharField(max_length=100,db_index=True)
+    review_rate=models.PositiveSmallIntegerField(
+        validators=[
+            MaxValueValidator(5),
+        ]
+    )
 
     user_id=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 

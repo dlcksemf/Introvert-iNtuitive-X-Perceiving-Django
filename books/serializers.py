@@ -208,13 +208,14 @@ class ApplicationsSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model=Review
-        fields=["review_num","review_content","user_id"]
+        fields=["review_num","review_content","review_rate","user_id"]
 
     def create(self, validated_data):
-        review_content = validated_data.get("story", None)
-        user_id_id = validated_data.get("user_id", None)
+        review_content = validated_data("review_content")
+        review_rate = validated_data("review_rate")
+        user_id_id = validated_data("user_id")
 
-        new_review = Books(review_content=review_content, user_id_id=user_id_id)
+        new_review = Books(review_content=review_content, review_rate=review_rate, user_id_id=user_id_id)
         new_review.save()
 
         return new_review
