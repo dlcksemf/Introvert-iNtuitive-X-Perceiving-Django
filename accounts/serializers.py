@@ -35,7 +35,7 @@ class UserCreationSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if attrs["password"] != attrs["password2"]:
-            raise serializers.ValidationError("Difference between passwords")
+            raise serializers.ValidationError("비밀번호가 일치하지 않습니다.")
         return attrs
 
     def create(self, validated_data):
@@ -43,16 +43,18 @@ class UserCreationSerializer(serializers.ModelSerializer):
         username = validated_data["username"]
         password = validated_data["password"]
         phone_num = validated_data["phone_num"]
+        department = validated_data.get("department")
         gender = validated_data.get("gender", "")
         position = validated_data.get("position", "")
         birthdate = validated_data.get("birthdate", None)
-        department = validated_data.get("department", "")
+
 
         new_user = User(email=email, username=username, gender=gender, position=position, birthdate=birthdate, phone_num=phone_num, department=department)
         new_user.set_password(password)
         new_user.save()
 
         return new_user
+
 
 
 class TokenObtainPairSerializer(OriginTokenObtainPairSerializer):
