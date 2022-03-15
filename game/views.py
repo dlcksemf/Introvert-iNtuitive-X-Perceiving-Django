@@ -4,11 +4,13 @@ from rest_framework.viewsets import ModelViewSet
 
 from game.models import Game, LoanedGame
 from game.serializers import GameSerializer,LoanedGameSerializer
+from game.paginations.GamePagination import GamePagination
 
 
 class GameViewSet(ModelViewSet):
     queryset=Game.objects.all()
     serializer_class=GameSerializer
+    pagination_class = GamePagination
 
     def get_queryset(self):
         qs=super().get_queryset()

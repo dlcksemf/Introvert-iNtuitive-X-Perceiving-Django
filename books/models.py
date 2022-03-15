@@ -131,6 +131,7 @@ class Review(TimestampedModel):
         ]
     )
 
+    book_name = models.ForeignKey(Books, on_delete=models.CASCADE,null=True)
     user_id=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 
     class Meta:
