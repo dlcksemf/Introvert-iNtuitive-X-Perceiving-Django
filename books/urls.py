@@ -12,9 +12,11 @@ router.register("wishes", views.WishesViewSet)
 router.register("applications", views.ApplicationsViewSet)
 router.register("category", views.CategoryViewSet)
 router.register("review", views.ReviewViewSet)
+# router.register("naver_api", views.naver_api)
 
 
 urlpatterns = [
-    path("api/",include(router.urls)),
+    path("api/", include(router.urls)),
+    path("api/naver_api/", views.naver_api)
 
 ]

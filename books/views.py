@@ -1,5 +1,7 @@
 from django.db.models import Q
+from rest_framework.decorators import api_view
 from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from books.models import Books, LoanedBooks, Wishes, Applications, Category, Review
@@ -7,6 +9,8 @@ from books.paginations.BookApplicationsPagination import BookApplicationPaginati
 from books.serializers import BooksSerializer, LoanedBooksSerializer, WishesSerializer, ApplicationsSerializer, \
     LoanedBooksCreationSerializer, CategorySerializer, CategoryCreationSerializer, WishesCreationSerializer, \
     ReviewSerializer
+import requests
+from django.conf import settings
 
 
 class BooksViewSet(ModelViewSet):
@@ -163,3 +167,18 @@ class ReviewViewSet(ModelViewSet):
             qs = qs.filter(conditions)
 
         return qs
+
+@api_view()
+def naver_api(request):
+    headers ={'X-Naver-Client-Id': settings.NAVER_CLIENT_ID,
+             'X-Naver-Client-Secret': settings.NAVER_CLIENT_SECRET}
+
+
+    query = request.query_params.get("query", "")
+    params = {"query":query, "d_isbn": str(query)}
+    response = requests.get("https://openapi.naver.com/v1/search/book_adv.json", headers=headers, params=params)
+    qs = response.json()
+    print(qs)
+    print(type(qs))
+    return Response(qs)
+
