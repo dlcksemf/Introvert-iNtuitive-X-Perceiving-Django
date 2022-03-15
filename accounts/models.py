@@ -69,7 +69,7 @@ class User(AbstractUser):
         blank=True)
     birthdate = models.DateField(blank=True, null=True)
     position = models.CharField(max_length=50, blank=True)
-    department = models.CharField(max_length=50, blank=True)
+    department = models.CharField(max_length=50)
     point = models.CharField(max_length=10, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
