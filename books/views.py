@@ -159,10 +159,10 @@ class ReviewViewSet(ModelViewSet):
     serializer_class = ReviewSerializer
 
     def get_queryset(self):
-        qs=super().get_queryset()
+        qs = super().get_queryset()
 
         query = self.request.query_params.get("query", "")
-        conditions = Q(name__icontains=query)
+        conditions = Q(book_name__title__icontains=query) | Q(book_name__writer__icontains=query)
         if query:
             qs = qs.filter(conditions)
 

@@ -42,18 +42,33 @@ class LoanCount(serializers.RelatedField):
             "return_state": return_state
         }
 
+class ReviewField(serializers.RelatedField):
+    def to_representation(self, value):
+        review_num = value.review_num
+        review_content = value.review_content
+        review_rate = value.review_rate
+        user_id = value.user_id.username
+
+        return {
+            "review_num": review_num,
+            "review_content": review_content,
+            "review_rate": review_rate,
+            "user_id": user_id,
+        }
 
 class BooksSerializer(serializers.ModelSerializer):
     loaned_books = BookListingField(many=True, read_only=True)
     count_loans = serializers.SerializerMethodField()
     return_due_date = serializers.SerializerMethodField()
+    review_set = ReviewField(many=True, read_only=True)
+
 
     class Meta:
         model=Books
         fields=["book_num", "cover_photo", "title", "writer",
                 "translator", "publisher", "published_date",
                 "ISBN", "story", "state", "category", "loaned_books",
-                "count_loans", "return_due_date"]
+                "count_loans", "return_due_date", "review_set"]
 
     def create(self, validated_data):
         title = validated_data["title"]
@@ -206,6 +221,8 @@ class ApplicationsSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class ReviewSerializer(serializers.ModelSerializer):
+    book_name = BooksSerializer(read_only=True)
+    user_id = UserListingField(read_only=True)
 
     class Meta:
         model = Review
