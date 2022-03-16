@@ -15,6 +15,14 @@ class Game(TimestampedModel):
     play_time=models.CharField(max_length=10,db_index=True)
     level=models.CharField(max_length=10,db_index=True)
     game_rule=models.TextField(blank=True)
+    game_state=models.CharField(
+        max_length=1,
+        default='A',
+        choices=[
+            ("A","Available"),
+            ("B", "Borrowed"),
+        ]
+    )
 
     game_cover_photo=models.ImageField(
         upload_to="books/%Y/%M",
