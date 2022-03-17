@@ -41,3 +41,26 @@ class LoanedGameCreationSerializer(serializers.ModelSerializer):
     class Meta:
         model=LoanedGame
         fields=["return_due_time","return_state","user_id","game_name"]
+
+    def create(self, validated_data):
+        loaned_game = LoanedGame.objects.create(**validated_data)
+        loaned_game.game_return_state = "L"
+        loaned_game.save()
+
+        game = validated_data["game_name"]
+
+        game.game_state = "B"
+        game.save()
+
+        return loaned_game
+
+    def update(self, instance, validated_data):
+        super().update(instance, validated_data)
+
+        game = instance.game_name
+
+        if validated_data["return_state"] == "R":
+            game.game_state = "A"
+            game.save()
+
+        return instance
