@@ -40,9 +40,9 @@ class Game(TimestampedModel):
 class LoanedGame(models.Model):
     loan_game_num=models.AutoField(primary_key=True)
 
-    loaned_time=models.DateTimeField(auto_now_add=True)
-    return_due_time=models.DateTimeField()
-    returned_time=models.DateTimeField()
+    loaned_time=models.TimeField(auto_now_add=True)
+    return_due_time=models.TimeField()
+    returned_time=models.TimeField(blank=True, null=True)
     return_state=models.CharField(
         max_length=1,
         choices=[

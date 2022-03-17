@@ -36,3 +36,8 @@ class LoanedGameSerializer(serializers.ModelSerializer):
             "user_id",
             "game_name",
         ]
+
+class LoanedGameCreationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=LoanedGame
+        fields=["return_due_time","return_state","user_id","game_name"]
