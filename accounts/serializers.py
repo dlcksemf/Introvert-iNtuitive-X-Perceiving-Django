@@ -63,6 +63,7 @@ class TokenObtainPairSerializer(OriginTokenObtainPairSerializer):
         data["user_id"] = self.user.user_id
         data["is_staff"] = self.user.is_staff
         data["username"] = self.user.username
+        data["birthdate"] = self.user.birthdate
 
         return data
 

@@ -10,10 +10,12 @@ class UserListingField(serializers.RelatedField):
     def to_representation(self, value):
         user_id = value.user_id
         username = value.username
+        birthdate = value.birthdate
 
         return {
             "user_id" : user_id,
-            "username": username
+            "username": username,
+            "birthdate": birthdate
         }
 
 
@@ -139,12 +141,14 @@ class LoanedBooksSerializer(serializers.ModelSerializer):
 
         book_name_representation = representation.pop('book_name')
         for key in book_name_representation:
-            if (key != "wishes_set" and key != "count_loans" and key != "loaned_books"):
+            if (key != "wishes_set" and key != "loaned_books"):
                 representation[key] = book_name_representation[key]
 
         user_id_representation = representation.pop('user_id')
+        print(user_id_representation)
         representation["user_id"] = user_id_representation["user_id"]
         representation["username"] = user_id_representation["username"]
+        representation["birthdate"] = user_id_representation["birthdate"]
 
         return representation
 
