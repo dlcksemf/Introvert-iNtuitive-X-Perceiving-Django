@@ -8,7 +8,7 @@ from books.models import Books, LoanedBooks, Wishes, Applications, Category, Rev
 from books.paginations.BookApplicationsPagination import BookApplicationPagination
 from books.serializers import BooksSerializer, LoanedBooksSerializer, WishesSerializer, ApplicationsSerializer, \
     LoanedBooksCreationSerializer, CategorySerializer, CategoryCreationSerializer, WishesCreationSerializer, \
-    ReviewSerializer
+    ReviewSerializer, ReviewCreationSerializer
 import requests
 from django.conf import settings
 
@@ -156,7 +156,13 @@ class ApplicationsViewSet(ModelViewSet):
 
 class ReviewViewSet(ModelViewSet):
     queryset = Review.objects.all()
-    serializer_class = ReviewSerializer
+
+    def get_serializer_class(self):
+        method = self.request.method
+        if method == 'PUT' or method == 'POST':
+            return ReviewCreationSerializer
+        else:
+            return ReviewSerializer
 
     def get_queryset(self):
         qs = super().get_queryset()
