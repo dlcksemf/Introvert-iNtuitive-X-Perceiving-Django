@@ -231,3 +231,10 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields=["review_num","review_content","review_rate","user_id","book_name"]
+
+
+class ReviewCreationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Review
+        fields=["review_num","review_content","review_rate","user_id","book_name"]
