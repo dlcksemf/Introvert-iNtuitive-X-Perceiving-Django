@@ -12,6 +12,7 @@ from rest_framework_simplejwt.serializers import (
 
 from books.models import LoanedBooks
 from books.serializers import LoanedBooksSerializer, ApplicationsSerializer, WishesSerializer
+from game.serializers import LoanedGameSerializer
 
 User = get_user_model()
 
@@ -75,13 +76,14 @@ class TokenRefreshSerializer(OriginTokenRefreshSerializer):
 class UserSerializer(serializers.ModelSerializer):
     applications_set = ApplicationsSerializer(many=True, read_only=True)
     loanedbooks_set = LoanedBooksSerializer(many=True, read_only=True)
+    loanedgame_set=LoanedGameSerializer(many=True, read_only=True)
     wishes_set = WishesSerializer(many=True, read_only=True)
     count_loans = serializers.SerializerMethodField()
     loaned_dates = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ["user_id", "applications_set", "loanedbooks_set", "wishes_set",
+        fields = ["user_id", "applications_set", "loanedbooks_set","loanedgame_set", "wishes_set",
                   "is_staff", "email", "username", "phone_num", "gender",
                   "birthdate", "position", "created_at", "updated_at",
                   "count_loans", "loaned_dates", "department", "point"]

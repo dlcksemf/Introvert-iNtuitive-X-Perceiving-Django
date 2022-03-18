@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from books.serializers import UserListingField
 from game.models import Game, LoanedGame
 
 
@@ -25,6 +26,9 @@ class GameSerializer(serializers.ModelSerializer):
                   "level","game_rule","game_cover_photo","game_state","loaned_game"]
 
 class LoanedGameSerializer(serializers.ModelSerializer):
+    game_name = GameSerializer()
+    user_id = UserListingField(read_only=True)
+
     class Meta:
         model=LoanedGame
         fields=[
@@ -36,6 +40,21 @@ class LoanedGameSerializer(serializers.ModelSerializer):
             "user_id",
             "game_name",
         ]
+
+    def to_representation(self, obj):
+        representation = super().to_representation(obj)
+
+        game_name_representation = representation.pop('game_name')
+        for key in game_name_representation:
+            if (key != "loaned_game"):
+                representation[key] = game_name_representation[key]
+
+        user_id_representation = representation.pop('user_id')
+        representation["user_id"] = user_id_representation["user_id"]
+        representation["username"] = user_id_representation["username"]
+
+        return representation
+
 
 class LoanedGameCreationSerializer(serializers.ModelSerializer):
     class Meta:
