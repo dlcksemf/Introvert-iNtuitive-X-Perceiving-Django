@@ -25,6 +25,7 @@ class GameViewSet(ModelViewSet):
 class LoanedGameViewSet(ModelViewSet):
     serializer_class = LoanedGameSerializer
     queryset=LoanedGame.objects.all()
+    pagination_class = GamePagination
 
     def get_serializer_class(self):
         method=self.request.method
