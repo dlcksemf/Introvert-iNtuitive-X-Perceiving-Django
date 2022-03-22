@@ -156,6 +156,7 @@ class ApplicationsViewSet(ModelViewSet):
 
 class ReviewViewSet(ModelViewSet):
     queryset = Review.objects.all()
+    pagination_class = BookApplicationPagination
 
     def get_serializer_class(self):
         method = self.request.method
