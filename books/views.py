@@ -11,6 +11,7 @@ from books.serializers import BooksSerializer, LoanedBooksSerializer, WishesSeri
     ReviewSerializer, ReviewCreationSerializer
 import requests
 from django.conf import settings
+from django.shortcuts import redirect, render
 
 
 class BooksViewSet(ModelViewSet):
@@ -187,4 +188,17 @@ def naver_api(request):
     print(qs)
     print(type(qs))
     return Response(qs)
+
+
+# Prepare a map of common locations to timezone choices you wish to offer.
+common_timezones = {
+    'Seoul': 'Asia/Seoul',
+}
+
+def set_timezone(request):
+    if request.method == 'POST':
+        request.session['django_timezone'] = request.POST['timezone']
+        return redirect('/')
+    else:
+        return render(request, 'template.html', {'timezones': common_timezones})
 
