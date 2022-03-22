@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from books.serializers import UserListingField
-from game.models import Game, LoanedGame
+from game.models import Game, LoanedGame, GameReview
 
 
 class GameListingField(serializers.RelatedField):
@@ -18,12 +18,28 @@ class GameListingField(serializers.RelatedField):
             "return_state": return_state
         }
 
+class GameReviewField(serializers.RelatedField):
+    def to_representation(self, value):
+        game_review_num=value.game_review_num
+        game_review_content=value.game_review_content
+        game_review_rate=value.game_review_rate
+        user_id=value.user_id.username
+
+        return {
+            "game_review_num":game_review_num,
+            "game_review_content":game_review_content,
+            "game_review_rate":game_review_rate,
+            "user_id":user_id,
+        }
+
+
 class GameSerializer(serializers.ModelSerializer):
     loaned_game = GameListingField(many=True, read_only=True)
+    gamereview_set=GameReviewField(many=True,read_only=True)
     class Meta:
         model = Game
         fields = ["game_num", "game_name", "player_num","play_time",
-                  "level","game_rule","game_cover_photo","game_state","loaned_game"]
+                  "level","game_rule","game_cover_photo","game_state","loaned_game","gamereview_set"]
 
 class LoanedGameSerializer(serializers.ModelSerializer):
     game_name = GameSerializer()
@@ -83,3 +99,18 @@ class LoanedGameCreationSerializer(serializers.ModelSerializer):
             game.save()
 
         return instance
+
+
+class GameReviewSerializer(serializers.ModelSerializer):
+    game_name=GameSerializer(read_only=True)
+    user_id=UserListingField(read_only=True)
+
+    class Meta:
+        model=GameReview
+        fields=["game_review_num","game_review_content","game_review_rate","user_id","game_name"]
+
+class GameReviewCreationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model=GameReview
+        fields=["game_review_num","game_review_content","game_review_rate","user_id","game_name"]
