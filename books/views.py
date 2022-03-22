@@ -170,7 +170,7 @@ class ReviewViewSet(ModelViewSet):
         qs = super().get_queryset()
 
         query = self.request.query_params.get("query", "")
-        conditions = Q(book_name__title__icontains=query) | Q(book_name__writer__icontains=query)
+        conditions = Q(book_name__title__icontains=query) | Q(user_id__username__icontains=query)
         if query:
             qs = qs.filter(conditions)
 
