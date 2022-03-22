@@ -50,12 +50,16 @@ class ReviewField(serializers.RelatedField):
         review_content = value.review_content
         review_rate = value.review_rate
         user_id = value.user_id.username
+        created_at = value.created_at
+        updated_at = value.updated_at
 
         return {
             "review_num": review_num,
             "review_content": review_content,
             "review_rate": review_rate,
             "user_id": user_id,
+            "created_at": created_at,
+            "updated_at": updated_at,
         }
 
 class BooksSerializer(serializers.ModelSerializer):
@@ -227,14 +231,15 @@ class ApplicationsSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     book_name = BooksSerializer(read_only=True)
     user_id = UserListingField(read_only=True)
+    created_at = ReviewField
 
     class Meta:
         model = Review
-        fields=["review_num","review_content","review_rate","user_id","book_name", "created_at", "updated_at"]
+        fields=["review_num","review_content","review_rate","user_id","book_name"]
 
 
 class ReviewCreationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields=["review_num","review_content","review_rate","user_id","book_name", "created_at", "updated_at"]
+        fields=["review_num","review_content","review_rate","user_id","book_name"]
