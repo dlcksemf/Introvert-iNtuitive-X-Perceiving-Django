@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.validators import MaxValueValidator
 from django.db import models
 
 class TimestampedModel(models.Model):
@@ -58,3 +59,20 @@ class LoanedGame(models.Model):
         ordering=["-loan_game_num"]
         verbose_name="게임 대여"
         verbose_name_plural="대여 게임 목록"
+
+class GameReview(TimestampedModel):
+    game_review_num=models.AutoField(primary_key=True)
+    game_review_content=models.CharField(max_length=100,db_index=True)
+    game_review_rate=models.PositiveSmallIntegerField(
+        validators=[
+            MaxValueValidator(5),
+        ]
+    )
+
+    game_name=models.ForeignKey(Game,on_delete=models.CASCADE,null=True)
+    user_id=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    
+    class Meta:
+        ordering=["-game_review_num"]
+        verbose_name="게임 리뷰"
+        verbose_name_plural="게임 리뷰 목록"

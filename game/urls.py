@@ -8,6 +8,7 @@ app_name="game"
 router=DefaultRouter()
 router.register("game",views.GameViewSet)
 router.register("loanedgame",views.LoanedGameViewSet)
+router.register("gamereview",views.GameReviewViewSet)
 
 urlpatterns=[
     path("api/",include(router.urls)),
