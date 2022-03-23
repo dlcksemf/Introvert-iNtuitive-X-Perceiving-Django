@@ -47,6 +47,7 @@ class LoanedGameViewSet(ModelViewSet):
 
 class GameReviewViewSet(ModelViewSet):
     queryset = GameReview.objects.all()
+    pagination_class = GamePagination
 
     def get_serializer_class(self):
         method = self.request.method
