@@ -47,6 +47,7 @@ class LoanedGameViewSet(ModelViewSet):
 
 class GameReviewViewSet(ModelViewSet):
     queryset = GameReview.objects.all()
+    pagination_class = GamePagination
 
     def get_serializer_class(self):
         method = self.request.method
@@ -60,7 +61,7 @@ class GameReviewViewSet(ModelViewSet):
         qs=super().get_queryset()
 
         query=self.request.query_params.get("query","")
-        conditions=Q(game_name__gmae_name__icontains=query)
+        conditions=Q(game_name__game_name__icontains=query)| Q(user_id__username__icontains=query)
         if query:
             qs = qs.filter(conditions)
 

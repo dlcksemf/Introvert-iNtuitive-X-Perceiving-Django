@@ -24,12 +24,16 @@ class GameReviewField(serializers.RelatedField):
         game_review_content=value.game_review_content
         game_review_rate=value.game_review_rate
         user_id=value.user_id.username
+        created_at = value.created_at
+        updated_at = value.updated_at
 
         return {
             "game_review_num":game_review_num,
             "game_review_content":game_review_content,
             "game_review_rate":game_review_rate,
             "user_id":user_id,
+            "created_at": created_at,
+            "updated_at": updated_at,
         }
 
 
