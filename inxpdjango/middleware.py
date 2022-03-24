@@ -2,6 +2,8 @@ import zoneinfo
 from django.conf import settings
 from django.utils import timezone
 
+now = timezone.localtime()
+
 class TimezoneMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
