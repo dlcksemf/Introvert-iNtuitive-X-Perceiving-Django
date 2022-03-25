@@ -73,7 +73,7 @@ class BooksSerializer(serializers.ModelSerializer):
         model=Books
         fields=["book_num", "cover_photo", "title", "writer",
                 "translator", "publisher", "published_date",
-                "ISBN", "story", "state", "category", "loaned_books",
+                "ISBN", "story", "state", "amount", "category", "loaned_books",
                 "count_loans", "return_due_date", "review_set"]
 
     def create(self, validated_data):

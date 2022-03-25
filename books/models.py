@@ -38,6 +38,7 @@ class Books(TimestampedModel):
     # 달력 DateField 나오게 하는 방법
     ISBN = models.CharField(max_length=20,db_index=True)
     story = models.TextField(blank=True)
+    amount = models.CharField(max_length=10)
 
     state = models.CharField(
         max_length=1,
