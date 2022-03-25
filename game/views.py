@@ -21,6 +21,11 @@ class GameViewSet(ModelViewSet):
         if query:
             qs = qs.filter(conditions)
 
+        game_state = self.request.query_params.get("game_state", "")
+        game_state_conditions = Q(game_state__exact=game_state)
+        if game_state:
+            qs = qs.filter(game_state_conditions)
+
         return qs
 
 class LoanedGameViewSet(ModelViewSet):
@@ -39,9 +44,19 @@ class LoanedGameViewSet(ModelViewSet):
         qs=super().get_queryset()
 
         query = self.request.query_params.get("query", "")
-        conditions = Q(game_name__icontains=query)
+        conditions = Q(game_name__game_name__icontains=query)
         if query:
             qs = qs.filter(conditions)
+
+        user_id = self.request.query_params.get("user_id", "")
+        user_id_conditions = Q(user_id__exact=user_id)
+        if user_id:
+            qs = qs.filter(user_id_conditions)
+
+        return_state = self.request.query_params.get("state", "")
+        return_state_conditions = Q(return_state__exact=return_state)
+        if return_state:
+            qs = qs.filter(return_state_conditions)
 
         return qs
 
