@@ -13,4 +13,4 @@ class LoanedGameAdmin(admin.ModelAdmin):
 
 @admin.register(GameReview)
 class GameReviewAdmin(admin.ModelAdmin):
-    list_display = ["game_review_num", "user_id", "game_review_content", "game_review_rate", "game_name",]
+    list_display = ["game_review_num", "user_id", "game_review_content", "game_review_rate", "game_name","updated_at"]

@@ -1,5 +1,5 @@
 from django.db.models import Q
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from rest_framework.viewsets import ModelViewSet
 
 from game.models import Game, LoanedGame, GameReview
@@ -53,7 +53,7 @@ class LoanedGameViewSet(ModelViewSet):
         if user_id:
             qs = qs.filter(user_id_conditions)
 
-        return_state = self.request.query_params.get("state", "")
+        return_state = self.request.query_params.get("return_state", "")
         return_state_conditions = Q(return_state__exact=return_state)
         if return_state:
             qs = qs.filter(return_state_conditions)
@@ -81,3 +81,14 @@ class GameReviewViewSet(ModelViewSet):
             qs = qs.filter(conditions)
 
         return  qs
+
+# common_timezones = {
+#     'Seoul': 'Asia/Seoul',
+# }
+#
+# def set_timezone(request):
+#     if request.method == 'POST':
+#         request.session['django_timezone'] = request.POST['timezone']
+#         return redirect('/')
+#     else:
+#         return render(request, 'template.html', {'timezones': common_timezones})
