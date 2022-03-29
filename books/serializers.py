@@ -107,7 +107,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 class BooksSerializer(serializers.ModelSerializer):
     loaned_books = BookListingField(many=True, read_only=True)
     count_loans = serializers.SerializerMethodField()
-    return_due_date = serializers.SerializerMethodField()
+    return_due_date = BookListingField(read_only=True)
     review_set = ReviewField(many=True, read_only=True)
 
 
