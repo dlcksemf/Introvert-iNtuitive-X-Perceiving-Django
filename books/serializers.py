@@ -203,7 +203,7 @@ class LoanedBooksSerializer(serializers.ModelSerializer):
 class LoanedBooksCreationSerializer(serializers.ModelSerializer):
     class Meta:
         model = LoanedBooks
-        fields = ["return_due_date", "book_name", "user_id", "return_state", "point"]
+        fields = ["return_due_date", "returned_date", "book_name", "user_id", "return_state", "point"]
 
     def create(self, validated_data):
         loaned_books = LoanedBooks.objects.create(**validated_data)
