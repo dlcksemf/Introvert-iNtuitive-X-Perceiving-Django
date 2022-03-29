@@ -21,14 +21,16 @@ class UserListingField(serializers.RelatedField):
 
 class BookListingField(serializers.RelatedField):
     def to_representation(self, value):
-        loaned_date = value.loaned_date
-        return_due_date = value.return_due_date
-        return_state = value.return_state
+        # loaned_date = value.loaned_date
+        # return_due_date = value.return_due_date
+        # return_state = value.return_state
+        book_name=value.title
 
         return {
-            "loaned_date": loaned_date,
-            "return_due_date": return_due_date,
-            "return_state": return_state
+            # "loaned_date": loaned_date,
+            # "return_due_date": return_due_date,
+            # "return_state": return_state
+            "book_name":book_name,
         }
 
 
@@ -43,7 +45,6 @@ class LoanCount(serializers.RelatedField):
             "return_due_date": return_due_date,
             "return_state": return_state
         }
-
 
 class ReviewField(serializers.RelatedField):
     def to_representation(self, value):
@@ -62,6 +63,31 @@ class ReviewField(serializers.RelatedField):
             "created_at": created_at,
             "updated_at": updated_at,
         }
+
+class ReviewSerializer(serializers.ModelSerializer):
+    book_name = BookListingField(read_only=True)
+    user_id = UserListingField(read_only=True)
+    # created_at = ReviewField
+
+    class Meta:
+        model = Review
+        fields=["review_num","review_content","review_rate","user_id","book_name","created_at","updated_at"]
+
+    def to_representation(self, obj):
+        representation = super().to_representation(obj)
+
+        # game_name_representation = representation.pop('game_name')
+        # for key in game_name_representation:
+        #     if (key != "loaned_game"):
+        #         representation[key] = game_name_representation[key]
+
+        user_id_representation = representation.pop('user_id')
+        representation["user_id"] = user_id_representation["user_id"]
+        representation["username"] = user_id_representation["username"]
+        # representation["birthdate"] = user_id_representation["birthdate"]
+
+        return representation
+
 
 class BooksSerializer(serializers.ModelSerializer):
     loaned_books = BookListingField(many=True, read_only=True)
@@ -230,12 +256,8 @@ class ApplicationsSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class ReviewSerializer(serializers.ModelSerializer):
-    book_name = BooksSerializer(read_only=True)
-    user_id = UserListingField(read_only=True)
-    created_at = ReviewField
+class ReviewCreationSerializer(serializers.ModelSerializer):
 
-
-class Meta:
-    model = Review
-    fields = ["review_num", "review_content", "review_rate", "user_id", "book_name"]
+    class Meta:
+        model = Review
+        fields=["review_num","review_content","review_rate","user_id","book_name"]
