@@ -38,7 +38,7 @@ class Books(TimestampedModel):
     # 달력 DateField 나오게 하는 방법
     ISBN = models.CharField(max_length=20,db_index=True)
     story = models.TextField(blank=True)
-    amount = models.CharField(max_length=10)
+    amount = models.IntegerField(default=1)
 
     state = models.CharField(
         max_length=1,
@@ -74,6 +74,7 @@ class LoanedBooks(models.Model):
             ("O", "Overdue"),
         ]
     )
+    point = models.IntegerField(default=0)
 
     book_name = models.ForeignKey(Books, on_delete=models.CASCADE, related_name='loaned_books')
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from datetime import datetime
 
 from books.models import Books, LoanedBooks, Wishes, Applications, Category, Review
 
@@ -26,8 +27,6 @@ class ReviewListingField(serializers.RelatedField):
         # return_state = value.return_state
         book_name=value.title
 
-
-
         return {
             # "loaned_date": loaned_date,
             # "return_due_date": return_due_date,
@@ -41,15 +40,11 @@ class BookListingField(serializers.RelatedField):
         return_due_date = value.return_due_date
         return_state = value.return_state
 
-
-
-
         return {
             "loaned_date": loaned_date,
             "return_due_date": return_due_date,
             "return_state": return_state,
         }
-
 
 
 class LoanCount(serializers.RelatedField):
@@ -63,6 +58,7 @@ class LoanCount(serializers.RelatedField):
             "return_due_date": return_due_date,
             "return_state": return_state
         }
+
 
 class ReviewField(serializers.RelatedField):
     def to_representation(self, value):
@@ -81,6 +77,7 @@ class ReviewField(serializers.RelatedField):
             "created_at": created_at,
             "updated_at": updated_at,
         }
+
 
 class ReviewSerializer(serializers.ModelSerializer):
     book_name = ReviewListingField(read_only=True)
@@ -182,6 +179,7 @@ class LoanedBooksSerializer(serializers.ModelSerializer):
             "return_due_date",
             "returned_date",
             "return_state",
+            "point",
             'loaned_date',
         ]
 
@@ -205,16 +203,18 @@ class LoanedBooksSerializer(serializers.ModelSerializer):
 class LoanedBooksCreationSerializer(serializers.ModelSerializer):
     class Meta:
         model = LoanedBooks
-        fields = ["return_due_date", "book_name", "user_id", "return_state"]
+        fields = ["return_due_date", "book_name", "user_id", "return_state", "point"]
 
     def create(self, validated_data):
         loaned_books = LoanedBooks.objects.create(**validated_data)
         loaned_books.return_state = "L"
+        loaned_books.point = loaned_books.point + 100
         loaned_books.save()
 
         book = validated_data["book_name"]
 
         book.state = "B"
+        book.amount = book.amount - 1
         book.save()
 
         return loaned_books
@@ -226,9 +226,13 @@ class LoanedBooksCreationSerializer(serializers.ModelSerializer):
 
         if validated_data["return_state"] == "R":
             book.state = "A"
+            book.amount = book.amount + 1
+
             book.save()
 
         return instance
+
+
 
 
 class WishesCreationSerializer(serializers.ModelSerializer):
