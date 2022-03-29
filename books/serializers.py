@@ -19,12 +19,14 @@ class UserListingField(serializers.RelatedField):
         }
 
 
-class BookListingField(serializers.RelatedField):
+class ReviewListingField(serializers.RelatedField):
     def to_representation(self, value):
         # loaned_date = value.loaned_date
         # return_due_date = value.return_due_date
         # return_state = value.return_state
         book_name=value.title
+
+
 
         return {
             # "loaned_date": loaned_date,
@@ -32,6 +34,22 @@ class BookListingField(serializers.RelatedField):
             # "return_state": return_state
             "book_name":book_name,
         }
+
+class BookListingField(serializers.RelatedField):
+    def to_representation(self, value):
+        loaned_date = value.loaned_date
+        return_due_date = value.return_due_date
+        return_state = value.return_state
+
+
+
+
+        return {
+            "loaned_date": loaned_date,
+            "return_due_date": return_due_date,
+            "return_state": return_state,
+        }
+
 
 
 class LoanCount(serializers.RelatedField):
@@ -65,7 +83,7 @@ class ReviewField(serializers.RelatedField):
         }
 
 class ReviewSerializer(serializers.ModelSerializer):
-    book_name = BookListingField(read_only=True)
+    book_name = ReviewListingField(read_only=True)
     user_id = UserListingField(read_only=True)
     # created_at = ReviewField
 
@@ -101,7 +119,7 @@ class BooksSerializer(serializers.ModelSerializer):
         fields=["book_num", "cover_photo", "title", "writer",
                 "translator", "publisher", "published_date",
                 "ISBN", "story", "state", "amount", "category", "loaned_books",
-                "count_loans", "return_due_date", "review_set"]
+                "count_loans", "return_due_date", "review_set","created_at","updated_at"]
 
     def create(self, validated_data):
         title = validated_data["title"]
