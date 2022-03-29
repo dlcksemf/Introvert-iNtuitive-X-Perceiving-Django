@@ -44,6 +44,7 @@ class LoanCount(serializers.RelatedField):
             "return_state": return_state
         }
 
+
 class ReviewField(serializers.RelatedField):
     def to_representation(self, value):
         review_num = value.review_num
@@ -228,18 +229,13 @@ class ApplicationsSerializer(serializers.ModelSerializer):
         model = Applications
         fields = "__all__"
 
+
 class ReviewSerializer(serializers.ModelSerializer):
     book_name = BooksSerializer(read_only=True)
     user_id = UserListingField(read_only=True)
     created_at = ReviewField
 
-    class Meta:
-        model = Review
-        fields=["review_num","review_content","review_rate","user_id","book_name"]
 
-
-class ReviewCreationSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Review
-        fields=["review_num","review_content","review_rate","user_id","book_name"]
+class Meta:
+    -        model = Review
+    -        fields = ["review_num", "review_content", "review_rate", "user_id", "book_name"]
