@@ -174,6 +174,11 @@ class ReviewViewSet(ModelViewSet):
         if query:
             qs = qs.filter(conditions)
 
+        book_num = self.request.query_params.get("book_num", "")
+        book_num_conditions = Q(book_name__exact=book_num)
+        if book_num:
+            qs = qs.filter(book_num_conditions)
+
         return qs
 
 @api_view()
