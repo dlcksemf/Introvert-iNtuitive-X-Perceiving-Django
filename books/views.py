@@ -72,7 +72,10 @@ class LoanedBooksViewSet(ModelViewSet):
         return_state = self.request.query_params.get("state", "")
         return_state_conditions = Q(return_state__exact=return_state)
         if return_state:
-            qs = qs.filter(return_state_conditions)
+            if return_state == "R":
+                qs = qs.filter(return_state_conditions)
+            else:
+                qs = qs.exclude(return_state__exact="R")
 
         return qs
 
