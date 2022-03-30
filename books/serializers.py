@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from datetime import datetime
+from datetime import date
 
 from books.models import Books, LoanedBooks, Wishes, Applications, Category, Review
 
@@ -227,19 +227,37 @@ class LoanedBooksCreationSerializer(serializers.ModelSerializer):
         return loaned_books
 
     def update(self, instance, validated_data):
+        """
+
+        LoanedBooks.objectx.update()가 업데이트 된 숫자이기 때문에 인수로 변수가 나옴.
+        1. 현재 날짜 - 반납 예정일 날짜가 > 0 일 경우 연체일자(.days)를 계산하여 *10을 적용해 차감 포인트를 구한다.
+
+        2. instance.save를 통해 DB에 저장을 하고 나머지 함수가 잘 구현되는지 살펴본다.
+        -> type이 book book.model.books 때처럼 book.model.Loanendbooks가 되어야하는줄 알았는데
+        instance가 loanedbook라서 instance.point에 update 값을 넣어주고 save를 통해 저장이 되었다.
+
+        """
         super().update(instance, validated_data)
 
         book = instance.book_name
+        print(type(book))
+        pre_point = instance.point
+        return_due_date = instance.return_due_date
+
+        now = date.today()
+        diff = (now - return_due_date).days
 
         if validated_data["return_state"] == "R":
             book.state = "A"
             book.amount = book.amount + 1
 
-            book.save()
+            if diff > 0:
+                instance.point = pre_point - (diff * 10)
+                instance.save()
+
+        book.save()
 
         return instance
-
-
 
 
 class WishesCreationSerializer(serializers.ModelSerializer):

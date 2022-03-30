@@ -25,7 +25,8 @@ class UserCreationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["user_id", "email", "username", "password", "password2", "gender", "position", "birthdate", "phone_num", "department"]
+        fields = ["user_id", "email", "username", "password", "password2",
+                  "gender", "position", "birthdate", "phone_num", "department"]
         validators = [
             UniqueTogetherValidator(
                 queryset=User.objects.all(),
@@ -50,7 +51,9 @@ class UserCreationSerializer(serializers.ModelSerializer):
         birthdate = validated_data.get("birthdate", None)
 
 
-        new_user = User(email=email, username=username, gender=gender, position=position, birthdate=birthdate, phone_num=phone_num, department=department)
+        new_user = User(email=email, username=username, gender=gender,
+                        position=position, birthdate=birthdate, phone_num=phone_num,
+                        department=department)
         new_user.set_password(password)
         new_user.save()
 
@@ -86,7 +89,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["user_id", "applications_set", "loanedbooks_set","loanedgame_set", "wishes_set",
                   "is_staff", "email", "username", "phone_num", "gender",
                   "birthdate", "position", "created_at", "updated_at",
-                  "count_loans", "loaned_dates", "department", "point"]
+                  "count_loans", "loaned_dates", "department"]
 
     def get_count_loans(self, instance):
         return instance.loanedbooks_set.count()
@@ -114,3 +117,6 @@ class UserSerializer(serializers.ModelSerializer):
                 dates.update(str(rkskek) for rkskek in date_range(loandate.loaned_date, return_date))
 
         return [ { 'day': key, 'value': value } for (key, value) in dates.items()]
+
+
+
