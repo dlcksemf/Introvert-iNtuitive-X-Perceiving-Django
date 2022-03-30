@@ -26,12 +26,14 @@ class ReviewListingField(serializers.RelatedField):
         # return_due_date = value.return_due_date
         # return_state = value.return_state
         book_name=value.title
+        book_num=value.book_num
 
         return {
             # "loaned_date": loaned_date,
             # "return_due_date": return_due_date,
             # "return_state": return_state
             "book_name":book_name,
+            "book_num":book_num,
         }
 
 class BookListingField(serializers.RelatedField):
@@ -68,6 +70,8 @@ class ReviewField(serializers.RelatedField):
         user_id = value.user_id.username
         created_at = value.created_at
         updated_at = value.updated_at
+        book_name = value.book_name.title
+        book_num = value.book_name.book_num
 
         return {
             "review_num": review_num,
@@ -76,17 +80,20 @@ class ReviewField(serializers.RelatedField):
             "user_id": user_id,
             "created_at": created_at,
             "updated_at": updated_at,
+            "book_name": book_name,
+            "book_num": book_num,
         }
 
 
 class ReviewSerializer(serializers.ModelSerializer):
     book_name = ReviewListingField(read_only=True)
+    book_num = ReviewListingField(read_only=True)
     user_id = UserListingField(read_only=True)
     # created_at = ReviewField
 
     class Meta:
         model = Review
-        fields=["review_num","review_content","review_rate","user_id","book_name","created_at","updated_at"]
+        fields=["review_num","review_content","review_rate","user_id","book_name","book_num","created_at","updated_at"]
 
     def to_representation(self, obj):
         representation = super().to_representation(obj)
@@ -107,7 +114,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 class BooksSerializer(serializers.ModelSerializer):
     loaned_books = BookListingField(many=True, read_only=True)
     count_loans = serializers.SerializerMethodField()
-    return_due_date = serializers.SerializerMethodField()
+    return_due_date = BookListingField(read_only=True)
     review_set = ReviewField(many=True, read_only=True)
 
 
@@ -203,7 +210,7 @@ class LoanedBooksSerializer(serializers.ModelSerializer):
 class LoanedBooksCreationSerializer(serializers.ModelSerializer):
     class Meta:
         model = LoanedBooks
-        fields = ["return_due_date", "book_name", "user_id", "return_state", "point"]
+        fields = ["return_due_date", "returned_date", "book_name", "user_id", "return_state", "point"]
 
     def create(self, validated_data):
         loaned_books = LoanedBooks.objects.create(**validated_data)
