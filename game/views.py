@@ -80,6 +80,11 @@ class GameReviewViewSet(ModelViewSet):
         if query:
             qs = qs.filter(conditions)
 
+        game_num = self.request.query_params.get("game_num", "")
+        game_num_conditions = Q(game_name__exact=game_num)
+        if game_num:
+            qs = qs.filter(game_num_conditions)
+
         return  qs
 
 # common_timezones = {
