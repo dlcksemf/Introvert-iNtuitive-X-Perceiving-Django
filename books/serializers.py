@@ -16,7 +16,7 @@ class UserListingField(serializers.RelatedField):
         return {
             "user_id" : user_id,
             "username": username,
-            "birthdate": birthdate
+            "birthdate": birthdate,
         }
 
 
@@ -179,15 +179,8 @@ class LoanedBooksSerializer(serializers.ModelSerializer):
     class Meta:
         model = LoanedBooks
         fields = [
-            "user_id",
-            "book_name",
-
-            "loan_num",
-            "return_due_date",
-            "returned_date",
-            "return_state",
-            "point",
-            'loaned_date',
+            "user_id", "book_name", "loan_num",
+            "return_due_date", "returned_date", "return_state", "point", 'loaned_date',
         ]
 
     def to_representation(self, obj):
@@ -210,7 +203,8 @@ class LoanedBooksSerializer(serializers.ModelSerializer):
 class LoanedBooksCreationSerializer(serializers.ModelSerializer):
     class Meta:
         model = LoanedBooks
-        fields = ["return_due_date", "returned_date", "book_name", "user_id", "return_state", "point"]
+        fields = ["return_due_date", "returned_date", "book_name",
+                  "user_id", "return_state", "point"]
 
     def create(self, validated_data):
         loaned_books = LoanedBooks.objects.create(**validated_data)
@@ -240,12 +234,13 @@ class LoanedBooksCreationSerializer(serializers.ModelSerializer):
         super().update(instance, validated_data)
 
         book = instance.book_name
-        print(type(book))
         pre_point = instance.point
         return_due_date = instance.return_due_date
 
         now = date.today()
         diff = (now - return_due_date).days
+
+        # user = instance.user_id
 
         if validated_data["return_state"] == "R":
             book.state = "A"
@@ -254,6 +249,21 @@ class LoanedBooksCreationSerializer(serializers.ModelSerializer):
             if diff > 0:
                 instance.point = pre_point - (diff * 10)
                 instance.save()
+
+            book_user_id = instance.user_id_id  # book의 user_id
+            user = instance.user_id.user_id  # accounts의 user_id
+
+            list_point = []
+            list_point.append(instance.user_id.point)
+
+# 대출한 사람끼리 포인트 합산 -> 유저와 대출유저가 같을때 그곳에 값 저장
+            if book_user_id == user:
+                if book_user_id:
+                    list_point.append(instance.point)
+                    print(list_point)
+                    instance.user_id.point = sum(list_point)
+
+            instance.user_id.save()
 
         book.save()
 

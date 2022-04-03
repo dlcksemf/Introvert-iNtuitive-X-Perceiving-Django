@@ -50,7 +50,6 @@ class UserCreationSerializer(serializers.ModelSerializer):
         position = validated_data.get("position", "")
         birthdate = validated_data.get("birthdate", None)
 
-
         new_user = User(email=email, username=username, gender=gender,
                         position=position, birthdate=birthdate, phone_num=phone_num,
                         department=department)
@@ -58,7 +57,6 @@ class UserCreationSerializer(serializers.ModelSerializer):
         new_user.save()
 
         return new_user
-
 
 
 class TokenObtainPairSerializer(OriginTokenObtainPairSerializer):
@@ -89,7 +87,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["user_id", "applications_set", "loanedbooks_set","loanedgame_set", "wishes_set",
                   "is_staff", "email", "username", "phone_num", "gender",
                   "birthdate", "position", "created_at", "updated_at",
-                  "count_loans", "loaned_dates", "department"]
+                  "count_loans", "loaned_dates", "department", "point"]
 
     def get_count_loans(self, instance):
         return instance.loanedbooks_set.count()
