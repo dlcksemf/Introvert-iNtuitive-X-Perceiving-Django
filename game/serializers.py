@@ -127,7 +127,7 @@ class LoanedGameCreationSerializer(serializers.ModelSerializer):
 
         if validated_data["return_state"] == "R":
             game.game_state = "A"
-            game.save()
+        game.save()
 
         return instance
 
