@@ -7,8 +7,12 @@ from game.models import Game, LoanedGame, GameReview
 class GameListingField(serializers.RelatedField):
     def to_representation(self, value):
         game_name = value.game_name
+        game_num = value.game_num
 
-        return game_name
+        return {
+            "game_name": game_name,
+            "game_num": game_num,
+                }
 
 
 class GameReviewField(serializers.RelatedField):
@@ -19,6 +23,8 @@ class GameReviewField(serializers.RelatedField):
         user_id=value.user_id.username
         created_at = value.created_at
         updated_at = value.updated_at
+        game_name = value.game_name.title
+        game_num = value.game_name.game_num
 
         return {
             "game_review_num":game_review_num,
@@ -27,6 +33,8 @@ class GameReviewField(serializers.RelatedField):
             "user_id":user_id,
             "created_at": created_at,
             "updated_at": updated_at,
+            "game_name": game_name,
+            "game_num": game_num,
         }
 
 class LoanedGameSerializer(serializers.ModelSerializer):
@@ -119,7 +127,7 @@ class LoanedGameCreationSerializer(serializers.ModelSerializer):
 
         if validated_data["return_state"] == "R":
             game.game_state = "A"
-            game.save()
+        game.save()
 
         return instance
 
