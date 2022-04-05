@@ -213,9 +213,10 @@ class LoanedBooksCreationSerializer(serializers.ModelSerializer):
         loaned_books.save()
 
         book = validated_data["book_name"]
-
-        book.state = "B"
         book.amount = book.amount - 1
+
+        if book.amount <= 0:
+            book.state = "B"
         book.save()
 
         return loaned_books
