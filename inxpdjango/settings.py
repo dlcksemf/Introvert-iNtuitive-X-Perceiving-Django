@@ -27,7 +27,7 @@ if dot_env_path.exists():
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.str("SECRET_KEY",default='django-insecure-nqbr96#5^5o7^y*_gv!df3zc_xq1fjgu!+sr%zh5!0wc2od61b')
+SECRET_KEY = env.str("SECRET_KEY",default="----SECRET_KEY----")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG',default=True)
 
@@ -71,7 +71,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            BASE_DIR / "inxpdjango" / "templates",
+            BASE_DIR / "inxpdjango" / "books/templates",
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -179,6 +179,28 @@ SIMPLE_JWT = {
         hours=ACCESS_TOKEN_LIFETIME_HOURS,
         minutes=ACCESS_TOKEN_LIFETIME_MINUTES,),
 }
+import os, json
+from django.core.exceptions import ImproperlyConfigured
+
+secret_file = os.path.join(BASE_DIR, 'secrets.json')
+
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets):
+    try:
+        return secrets[setting]
+    except KeyError:
+        error_msg = "Set the {} environment variable".format(setting)
+        raise ImproperlyConfigured(error_msg)
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = "smtp.naver.com"
+EMAIL_HOST_USER = get_secret("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD =get_secret("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = get_secret("EMAIL_PORT")
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = get_secret("DEFAULT_FROM_EMAIL")
 
 NAVER_CLIENT_ID = env.str("NAVER_CLIENT_ID")
 NAVER_CLIENT_SECRET = env.str("NAVER_CLIENT_SECRET")

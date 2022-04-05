@@ -4,20 +4,26 @@ from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from accounts.serializers import UserSerializer
 from books.models import Books, LoanedBooks, Wishes, Applications, Category, Review
 from books.paginations.BookApplicationsPagination import BookApplicationPagination
 from books.serializers import BooksSerializer, LoanedBooksSerializer, WishesSerializer, ApplicationsSerializer, \
     LoanedBooksCreationSerializer, CategorySerializer, CategoryCreationSerializer, WishesCreationSerializer, \
-    ReviewSerializer, ReviewCreationSerializer
+    ReviewSerializer, ReviewCreationSerializer, UserListingField
 import requests
 from django.conf import settings
 from django.shortcuts import redirect, render
+
+import smtplib
+from email.mime.text import MIMEText
+
 
 
 class BooksViewSet(ModelViewSet):
     queryset = Books.objects.all()
     serializer_class = BooksSerializer
     pagination_class = BookApplicationPagination
+
     #
     # def get_permissions(self):
     #     if self.request.method == "GET":
@@ -45,9 +51,12 @@ class BooksViewSet(ModelViewSet):
         return qs
 
 
+from django.conf import settings
+
 class LoanedBooksViewSet(ModelViewSet):
     queryset = LoanedBooks.objects.all()
     pagination_class = BookApplicationPagination
+
 
     def get_serializer_class(self):
         method = self.request.method
@@ -55,6 +64,65 @@ class LoanedBooksViewSet(ModelViewSet):
             return LoanedBooksCreationSerializer
         else:
             return LoanedBooksSerializer
+
+
+    def send_email(smtp_info, msg):
+        EMAIL_HOST_PASSWORD=getattr(settings,"EMAIL_HOST_PASSWORD","EMAIL_HOST_PASSWORD")
+        smtp_info = dict({"smtp_server": "smtp.naver.com",  # SMTP 서버 주소
+                          "smtp_user_id": "jwheein950417@naver.com",
+                          "smtp_user_pw": EMAIL_HOST_PASSWORD,
+                          "smtp_port": 587})  # SMTP 서버 포트
+
+        with smtplib.SMTP(smtp_info["smtp_server"], smtp_info["smtp_port"]) as server:
+            # TLS 보안 연결
+            server.starttls()
+            # 로그인
+            server.login(smtp_info["smtp_user_id"], smtp_info["smtp_user_pw"])
+
+            response = server.sendmail(msg['from'], msg['to'], msg.as_string())
+
+            if not response:
+                print('이메일을 성공적으로 보냈습니다.')
+            else:
+                print(response)
+
+
+    def create(self, request, *args, **kwargs):
+        if request.method=="POST":
+
+            username =request.user.username
+            email=request.user.email
+            # loanedmodal 46번째 줄에서 data로 받아온 정보이기 때문
+            # 근데 아래는 pk값을 받는거기 때문에 objects.get으로 받음
+            book = Books.objects.get(book_num=request.data["book_name"])
+            bookname = book.title
+            returndate=request.data["return_due_date"]
+            title = "다독다독 유클리드 소프트 도서 대출 안내 메세지입니다"
+            content = f"""
+{username}님 안녕하세요!
+{username}님이 빌린 책은 {bookname}이다.
+{username}님은 {returndate}까지 반납해야함니다
+            """
+            sender = "jwheein950417@naver.com"
+            receiver = f'{email}'
+            # # 메일 객체 생성 : 메시지 내용에는 한글이 들어가기 때문에 한글을 지원하는 문자 체계인 UTF-8을 명시해줍니다.
+            msg = MIMEText(_text=content, _charset="utf-8")  # 메일 내용
+
+            msg['Subject'] = title  # 메일 제목
+            msg['From'] = sender  # 송신자
+            msg['To'] = receiver  # 수신자
+
+
+            self.send_email(msg)
+
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return Response(serializer.errors)
+
+        return Response(serializer.data)
+
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -210,4 +278,6 @@ def naver_api(request):
 #         return redirect('/')
 #     else:
 #         return render(request, 'template.html', {'timezones': common_timezones})
+
+
 

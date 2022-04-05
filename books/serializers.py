@@ -3,6 +3,8 @@ from rest_framework import serializers
 from datetime import date
 
 from books.models import Books, LoanedBooks, Wishes, Applications, Category, Review
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
 
 User = get_user_model()
 
@@ -12,11 +14,13 @@ class UserListingField(serializers.RelatedField):
         user_id = value.user_id
         username = value.username
         birthdate = value.birthdate
+        email=value.email
 
         return {
             "user_id" : user_id,
             "username": username,
-            "birthdate": birthdate
+            "birthdate": birthdate,
+            "email":email,
         }
 
 
@@ -106,7 +110,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         user_id_representation = representation.pop('user_id')
         representation["user_id"] = user_id_representation["user_id"]
         representation["username"] = user_id_representation["username"]
-        # representation["birthdate"] = user_id_representation["birthdate"]
+        representation["birthdate"] = user_id_representation["birthdate"]
 
         return representation
 
@@ -203,6 +207,7 @@ class LoanedBooksSerializer(serializers.ModelSerializer):
         representation["user_id"] = user_id_representation["user_id"]
         representation["username"] = user_id_representation["username"]
         representation["birthdate"] = user_id_representation["birthdate"]
+        representation["email"] = user_id_representation["email"]
 
         return representation
 
@@ -224,7 +229,27 @@ class LoanedBooksCreationSerializer(serializers.ModelSerializer):
         book.amount = book.amount - 1
         book.save()
 
+        # user_id=User.objects.create(**validated_data)
+        # send_mail=LoanedBooks(username=user_id.username,email=user_id.email,return_due_date=loaned_books.return_due_date,
+        #                       book=Books.title)
+        #
+        # send_mail.save()
+        #
+        # mail_message=render_to_string("template/email_template.html",{
+        #     'username':user_id.username,
+        #     'email':user_id.email,
+        #     'returnduedate':loaned_books.return_due_date,
+        #     'book':Books.title,
+        # })
+        #
+        #
+        # email = EmailMessage(mail_message)
+        # email.send()
+
+
+
         return loaned_books
+
 
     def update(self, instance, validated_data):
         """
@@ -258,6 +283,7 @@ class LoanedBooksCreationSerializer(serializers.ModelSerializer):
         book.save()
 
         return instance
+
 
 
 class WishesCreationSerializer(serializers.ModelSerializer):

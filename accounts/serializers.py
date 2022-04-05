@@ -10,8 +10,10 @@ from rest_framework_simplejwt.serializers import (
     TokenRefreshSerializer as OriginTokenRefreshSerializer,
 )
 
+
 from books.models import LoanedBooks
-from books.serializers import LoanedBooksSerializer, ApplicationsSerializer, WishesSerializer
+from books.serializers import LoanedBooksSerializer, ApplicationsSerializer, WishesSerializer, BookListingField, \
+    BooksSerializer
 from game.serializers import LoanedGameSerializer
 
 User = get_user_model()
@@ -84,6 +86,7 @@ class UserSerializer(serializers.ModelSerializer):
     count_loans = serializers.SerializerMethodField()
     loaned_dates = serializers.SerializerMethodField()
 
+
     class Meta:
         model = User
         fields = ["user_id", "applications_set", "loanedbooks_set","loanedgame_set", "wishes_set",
@@ -117,6 +120,8 @@ class UserSerializer(serializers.ModelSerializer):
                 dates.update(str(rkskek) for rkskek in date_range(loandate.loaned_date, return_date))
 
         return [ { 'day': key, 'value': value } for (key, value) in dates.items()]
+
+
 
 
 

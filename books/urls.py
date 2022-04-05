@@ -17,6 +17,7 @@ router.register("review", views.ReviewViewSet)
 
 urlpatterns = [
     path("api/", include(router.urls)),
-    path("api/naver_api/", views.naver_api)
+    path("api/naver_api/", views.naver_api),
+    # path('send/',MailView.as_view()),
 
 ]

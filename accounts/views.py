@@ -10,6 +10,7 @@ from rest_framework_simplejwt.views import (
 from accounts.serializers import TokenObtainPairSerializer, UserCreationSerializer, UserSerializer
 from books.paginations.BookApplicationsPagination import BookApplicationPagination
 
+
 User = get_user_model()
 
 

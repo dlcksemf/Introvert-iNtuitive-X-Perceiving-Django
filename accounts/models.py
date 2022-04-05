@@ -3,6 +3,9 @@ from django.contrib.auth.models import AbstractUser, UserManager
 from django.core.validators import RegexValidator
 from django.db import models
 
+from books.models import Books, LoanedBooks
+from game.models import LoanedGame
+
 
 class CustomUserManager(UserManager):
     def create_user(self, email, password=None, **extra_fields):
