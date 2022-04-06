@@ -28,6 +28,13 @@ class GameViewSet(ModelViewSet):
 
         return qs
 
+import smtplib
+from email.mime.text import MIMEText
+import requests
+from django.conf import settings
+from rest_framework.response import Response
+from datetime import datetime
+
 class LoanedGameViewSet(ModelViewSet):
     serializer_class = LoanedGameSerializer
     queryset=LoanedGame.objects.all()
@@ -39,6 +46,59 @@ class LoanedGameViewSet(ModelViewSet):
             return LoanedGameCreationSerializer
         else:
             return LoanedGameSerializer
+
+    def send_email(smtp_info, msg):
+        EMAIL_HOST_PASSWORD = getattr(settings, "EMAIL_HOST_PASSWORD", "EMAIL_HOST_PASSWORD")
+        smtp_info = dict({"smtp_server": "smtp.naver.com",  # SMTP 서버 주소
+                          "smtp_user_id": "jwheein950417@naver.com",
+                          "smtp_user_pw": EMAIL_HOST_PASSWORD,
+                          "smtp_port": 587})  # SMTP 서버 포트
+
+        with smtplib.SMTP(smtp_info["smtp_server"], smtp_info["smtp_port"]) as server:
+            # TLS 보안 연결
+            server.starttls()
+            # 로그인
+            server.login(smtp_info["smtp_user_id"], smtp_info["smtp_user_pw"])
+
+            response = server.sendmail(msg['from'], msg['to'], msg.as_string())
+
+            if not response:
+                print('이메일을 성공적으로 보냈습니다.')
+            else:
+                print(response)
+
+    def create(self, request, *args, **kwargs):
+        if request.method == "POST":
+            username = request.user.username
+            email = request.user.email
+            game = Game.objects.get(game_num=request.data["game_name"])
+            gamename = game.game_name
+            returntime = request.data["return_due_time"]
+            returnduetime=returntime[0:16].replace('T', ' ')
+            title = "다독다독 유클리드 소프트 도서 대출 안내 메세지입니다"
+            content = f"""
+{username}님 안녕하세요!
+{username}님이 빌린 게임은 {gamename}이다.
+{username}님은 {returnduetime}까지 반납해야함니다
+            """
+            sender = "jwheein950417@naver.com"
+            receiver = f'{email}'
+            # # 메일 객체 생성 : 메시지 내용에는 한글이 들어가기 때문에 한글을 지원하는 문자 체계인 UTF-8을 명시해줍니다.
+            msg = MIMEText(_text=content, _charset="utf-8")  # 메일 내용
+
+            msg['Subject'] = title  # 메일 제목
+            msg['From'] = sender  # 송신자
+            msg['To'] = receiver  # 수신자
+
+            self.send_email(msg)
+
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return Response(serializer.errors)
+
+        return Response(serializer.data)
 
     def get_queryset(self):
         qs=super().get_queryset()
