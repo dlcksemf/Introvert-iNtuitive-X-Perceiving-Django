@@ -20,13 +20,7 @@ class UserListingField(serializers.RelatedField):
             "user_id" : user_id,
             "username": username,
             "birthdate": birthdate,
-<<<<<<< HEAD
             "email": email}
-=======
-            "email":email,
-            }
-
->>>>>>> cbb4a2cbc6d2b8f9a2258c9c18e6cd089b5338e2
 
 
 class ReviewListingField(serializers.RelatedField):
@@ -201,7 +195,6 @@ class LoanedBooksSerializer(serializers.ModelSerializer):
                 representation[key] = book_name_representation[key]
 
         user_id_representation = representation.pop('user_id')
-        print(user_id_representation)
         representation["user_id"] = user_id_representation["user_id"]
         representation["username"] = user_id_representation["username"]
         representation["birthdate"] = user_id_representation["birthdate"]

@@ -56,10 +56,10 @@ class LoanedGameSerializer(serializers.ModelSerializer):
     def to_representation(self, obj):
         representation = super().to_representation(obj)
 
-        # game_name_representation = representation.pop('game_name')
-        # for key in game_name_representation:
-        #     if (key != "loaned_game"):
-        #         representation[key] = game_name_representation[key]
+        game_name_representation = representation.pop('game_name')
+        for key in game_name_representation:
+            if (key != "loaned_game"):
+                representation[key] = game_name_representation[key]
 
         user_id_representation = representation.pop('user_id')
         representation["user_id"] = user_id_representation["user_id"]
