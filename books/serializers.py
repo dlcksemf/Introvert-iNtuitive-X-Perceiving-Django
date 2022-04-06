@@ -20,11 +20,7 @@ class UserListingField(serializers.RelatedField):
             "user_id" : user_id,
             "username": username,
             "birthdate": birthdate,
-<<<<<<< HEAD
-            "email":email,
-=======
->>>>>>> cab9b54b777f85ef69862fad577eec33d3419858
-        }
+            "email": email}
 
 
 class ReviewListingField(serializers.RelatedField):
