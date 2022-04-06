@@ -33,7 +33,7 @@ from email.mime.text import MIMEText
 import requests
 from django.conf import settings
 from rest_framework.response import Response
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class LoanedGameViewSet(ModelViewSet):
     serializer_class = LoanedGameSerializer
@@ -74,12 +74,14 @@ class LoanedGameViewSet(ModelViewSet):
             game = Game.objects.get(game_num=request.data["game_name"])
             gamename = game.game_name
             returntime = request.data["return_due_time"]
-            returnduetime=returntime[0:16].replace('T', ' ')
-            title = "다독다독 유클리드 소프트 도서 대출 안내 메세지입니다"
+            returnduetime = returntime[2:16].replace('T', ' ')
+            date_time_returnduetime = datetime.strptime(returnduetime, '%y-%m-%d %H:%M')
+            returntime_kr = date_time_returnduetime + timedelta(hours=9)
+            title = "다독다독 유클리드 소프트 게임 대출 안내 메세지입니다"
             content = f"""
 {username}님 안녕하세요!
-{username}님이 빌린 게임은 {gamename}이다.
-{username}님은 {returnduetime}까지 반납해야함니다
+{username}님이 빌린 게임은 {gamename}입니다.
+{returntime_kr}까지 반납해야 합니다.
             """
             sender = "jwheein950417@naver.com"
             receiver = f'{email}'
