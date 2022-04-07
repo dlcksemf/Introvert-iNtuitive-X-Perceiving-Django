@@ -337,6 +337,7 @@ class ApplicationsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Applications
+        # fields = "__all__"
         fields = ["application_num","title","writer","publisher","ISBN","state","user_id"]
 
     def to_representation(self, obj):
@@ -348,6 +349,12 @@ class ApplicationsSerializer(serializers.ModelSerializer):
         representation["email"] = user_id_representation["email"]
 
         return representation
+
+class ApplicationsCreationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model=Applications
+        fields=["application_num","title","writer","publisher","ISBN","state","user_id"]
 
 class ReviewCreationSerializer(serializers.ModelSerializer):
 

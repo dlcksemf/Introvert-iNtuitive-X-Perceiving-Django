@@ -10,7 +10,7 @@ from books.models import Books, LoanedBooks, Wishes, Applications, Category, Rev
 from books.paginations.BookApplicationsPagination import BookApplicationPagination
 from books.serializers import BooksSerializer, LoanedBooksSerializer, WishesSerializer, ApplicationsSerializer, \
     LoanedBooksCreationSerializer, CategorySerializer, CategoryCreationSerializer, WishesCreationSerializer, \
-    ReviewSerializer, ReviewCreationSerializer, UserListingField
+    ReviewSerializer, ReviewCreationSerializer, UserListingField, ApplicationsCreationSerializer
 import requests
 from django.conf import settings
 from django.shortcuts import redirect, render
@@ -235,6 +235,65 @@ class ApplicationsViewSet(ModelViewSet):
     queryset = Applications.objects.all()
     serializer_class = ApplicationsSerializer
     pagination_class = BookApplicationPagination
+
+    def get_serializer_class(self):
+        method = self.request.method
+        if method == "PUT" or method == "POST" or method == "PATCH":
+            return ApplicationsCreationSerializer
+        else:
+            return ApplicationsSerializer
+
+    def send_email(smtp_info, msg):
+        EMAIL_HOST_PASSWORD = getattr(settings, "EMAIL_HOST_PASSWORD", "EMAIL_HOST_PASSWORD")
+        smtp_info = dict({"smtp_server": "smtp.naver.com",  # SMTP 서버 주소
+                          "smtp_user_id": "jwheein950417@naver.com",
+                          "smtp_user_pw": EMAIL_HOST_PASSWORD,
+                          "smtp_port": 587})  # SMTP 서버 포트
+
+        with smtplib.SMTP(smtp_info["smtp_server"], smtp_info["smtp_port"]) as server:
+            # TLS 보안 연결
+            server.starttls()
+            # 로그인
+            server.login(smtp_info["smtp_user_id"], smtp_info["smtp_user_pw"])
+
+            response = server.sendmail(msg['from'], msg['to'], msg.as_string())
+
+            if not response:
+                print('이메일을 성공적으로 보냈습니다.')
+            else:
+                print(response)
+
+    def update(self, request, *args, **kwargs):
+        if request.method == "PATCH":
+            kwargs['partial'] = True
+            if request.data["state"] == "O":
+                # partial = kwargs.pop('partial', False)
+                instance = self.get_object()
+                # serializer = self.get_serializer(instance, data=request.data, partial=partial)
+                # serializer.is_valid(raise_exception=True)
+                # self.perform_update(serializer)
+                # email = instance.email
+                username = instance.user_id.username
+                email = instance.user_id.email
+                bookname = instance.title
+                mailtitle = "다독다독 유클리드 소프트 도서 신청 안내 메세지입니다"
+                content = f"""
+    {username} 님 안녕하세요!
+    {username}님이 주문하신 책은 {bookname} 이다.
+    그리고 그 책이 입고되었으니 대출하세요
+                           """
+                sender = "jwheein950417@naver.com"
+                receiver = f'{email}'
+                # # 메일 객체 생성 : 메시지 내용에는 한글이 들어가기 때문에 한글을 지원하는 문자 체계인 UTF-8을 명시해줍니다.
+                msg = MIMEText(_text=content, _charset="utf-8")  # 메일 내용
+
+                msg['Subject'] = mailtitle  # 메일 제목
+                msg['From'] = sender  # 송신자
+                msg['To'] = receiver  # 수신자
+
+                self.send_email(msg)
+
+            return super().update(request, *args, **kwargs)
 
     def get_queryset(self):
         qs = super().get_queryset()
