@@ -278,9 +278,9 @@ class ApplicationsViewSet(ModelViewSet):
                 bookname = instance.title
                 mailtitle = "다독다독 유클리드 소프트 도서 신청 안내 메세지입니다"
                 content = f"""
-    {username} 님 안녕하세요!
-    {username}님이 주문하신 책은 {bookname} 이다.
-    그리고 그 책이 입고되었으니 대출하세요
+{username}님 안녕하세요!
+{username}님이 주문하신 책은 {bookname} 이다.
+그리고 그 책이 입고되었으니 대출하세요
                            """
                 sender = "jwheein950417@naver.com"
                 receiver = f'{email}'
@@ -293,7 +293,35 @@ class ApplicationsViewSet(ModelViewSet):
 
                 self.send_email(msg)
 
+            if request.data["state"] == "D":
+                # partial = kwargs.pop('partial', False)
+                instance = self.get_object()
+                # serializer = self.get_serializer(instance, data=request.data, partial=partial)
+                # serializer.is_valid(raise_exception=True)
+                # self.perform_update(serializer)
+                # email = instance.email
+                username = instance.user_id.username
+                email = instance.user_id.email
+                bookname = instance.title
+                mailtitle = "다독다독 유클리드 소프트 도서 신청 안내 메세지입니다"
+                content = f"""
+{username}님 안녕하세요!
+{username}님이 주문하신 책은 {bookname} 이다.
+그리고 그 책이 반려되었다
+                                      """
+                sender = "jwheein950417@naver.com"
+                receiver = f'{email}'
+                # # 메일 객체 생성 : 메시지 내용에는 한글이 들어가기 때문에 한글을 지원하는 문자 체계인 UTF-8을 명시해줍니다.
+                msg = MIMEText(_text=content, _charset="utf-8")  # 메일 내용
+
+                msg['Subject'] = mailtitle  # 메일 제목
+                msg['From'] = sender  # 송신자
+                msg['To'] = receiver  # 수신자
+
+                self.send_email(msg)
+
             return super().update(request, *args, **kwargs)
+
 
     def get_queryset(self):
         qs = super().get_queryset()
