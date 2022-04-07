@@ -333,10 +333,21 @@ class WishesSerializer(serializers.ModelSerializer):
 
 
 class ApplicationsSerializer(serializers.ModelSerializer):
+    user_id = UserListingField(read_only=True)
+
     class Meta:
         model = Applications
-        fields = "__all__"
+        fields = ["application_num","title","writer","publisher","ISBN","state","user_id"]
 
+    def to_representation(self, obj):
+        representation = super().to_representation(obj)
+
+        user_id_representation = representation.pop('user_id')
+        representation["user_id"] = user_id_representation["user_id"]
+        representation["username"] = user_id_representation["username"]
+        representation["email"] = user_id_representation["email"]
+
+        return representation
 
 class ReviewCreationSerializer(serializers.ModelSerializer):
 
