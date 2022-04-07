@@ -1,4 +1,5 @@
 from django.db.models import Q
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.response import Response
@@ -123,30 +124,31 @@ class LoanedBooksViewSet(ModelViewSet):
             return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
-        kwargs['partial'] = True
-        if request.data["return_state"] == "E":
-            username = request.user.username
-            email = request.user.email
-            instance = self.get_object()
-            book = instance.book_name
-            bookname = book.title
-            returndate = request.data["return_due_date"]
-            title = "다독다독 유클리드 소프트 도서 대출 안내 메세지입니다"
-            content = f"""
-{username}님 안녕하세요!
-{username}님이 빌린 책은 {bookname}이다.
-근데 님이 연장을해서 {username}님은 {returndate}까지 반납해야함니다
-                       """
-            sender = "jwheein950417@naver.com"
-            receiver = f'{email}'
-            # # 메일 객체 생성 : 메시지 내용에는 한글이 들어가기 때문에 한글을 지원하는 문자 체계인 UTF-8을 명시해줍니다.
-            msg = MIMEText(_text=content, _charset="utf-8")  # 메일 내용
+        if request.method == "PATCH":
+            kwargs['partial'] = True
+            if request.data["return_state"] == "E":
+                username = request.user.username
+                email = request.user.email
+                instance = self.get_object()
+                book = instance.book_name
+                bookname = book.title
+                returndate = request.data["return_due_date"]
+                title = "다독다독 유클리드 소프트 도서 대출 안내 메세지입니다"
+                content = f"""
+    {username}님 안녕하세요!
+    {username}님이 빌린 책은 {bookname}이다.
+    근데 님이 연장을해서 {username}님은 {returndate}까지 반납해야함니다
+                           """
+                sender = "jwheein950417@naver.com"
+                receiver = f'{email}'
+                # # 메일 객체 생성 : 메시지 내용에는 한글이 들어가기 때문에 한글을 지원하는 문자 체계인 UTF-8을 명시해줍니다.
+                msg = MIMEText(_text=content, _charset="utf-8")  # 메일 내용
 
-            msg['Subject'] = title  # 메일 제목
-            msg['From'] = sender  # 송신자
-            msg['To'] = receiver  # 수신자
+                msg['Subject'] = title  # 메일 제목
+                msg['From'] = sender  # 송신자
+                msg['To'] = receiver  # 수신자
 
-            self.send_email(msg)
+                self.send_email(msg)
 
             return super().update(request, *args, **kwargs)
 
