@@ -20,7 +20,7 @@ class WishesAdmin(admin.ModelAdmin):
 
 @admin.register(Applications)
 class ApplicationsAdmin(admin.ModelAdmin):
-    list_display = ["application_num", "title", "writer", "publisher", "ISBN", "state", "user_id"]
+    list_display = ["application_num", "title", "writer", "publisher", "ISBN", "state", "user_id","created_at"]
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
