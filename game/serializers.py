@@ -115,7 +115,10 @@ class LoanedGameCreationSerializer(serializers.ModelSerializer):
 
         game = validated_data["game_name"]
 
-        game.game_state = "B"
+        game.game_amount = game.game_amount - 1
+
+        if game.game_amount <= 0:
+            game.game_state = "B"
         game.save()
 
         return loaned_game
@@ -127,6 +130,8 @@ class LoanedGameCreationSerializer(serializers.ModelSerializer):
 
         if validated_data["return_state"] == "R":
             game.game_state = "A"
+
+        game.game_amount = game.game_amount + 1
         game.save()
 
         return instance
