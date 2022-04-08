@@ -104,6 +104,7 @@ class Applications(TimestampedModel):
     writer = models.CharField(max_length=100,db_index=True)
     publisher = models.CharField(max_length=100)
     ISBN = models.CharField(max_length=20, db_index=True)
+    confirm_date=models.DateField(blank=True,null=True)
     state = models.CharField(
         max_length=1,
         choices=[

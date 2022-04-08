@@ -338,7 +338,7 @@ class ApplicationsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Applications
         # fields = "__all__"
-        fields = ["application_num","title","writer","publisher","ISBN","state","user_id","created_at"]
+        fields = ["application_num","title","writer","publisher","ISBN","state","user_id","created_at","confirm_date"]
 
     def to_representation(self, obj):
         representation = super().to_representation(obj)
@@ -354,7 +354,7 @@ class ApplicationsCreationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=Applications
-        fields=["application_num","title","writer","publisher","ISBN","state","user_id"]
+        fields=["application_num","title","writer","publisher","ISBN","state","user_id","confirm_date"]
 
 class ReviewCreationSerializer(serializers.ModelSerializer):
 
