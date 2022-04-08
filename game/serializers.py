@@ -100,13 +100,14 @@ class GameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Game
         fields = ["game_num", "game_name", "player_num","play_time",
-                  "level","game_rule","game_cover_photo","game_state","loaned_game","gamereview_set"]
+                  "level","game_rule","game_cover_photo","game_state","loaned_game","gamereview_set",
+                  "game_amount"]
 
 
 class LoanedGameCreationSerializer(serializers.ModelSerializer):
     class Meta:
         model=LoanedGame
-        fields=["return_due_time","return_state","returned_time","user_id","game_name"]
+        fields=["return_due_time","return_state","returned_time","user_id","game_name", "game_amount"]
 
     def create(self, validated_data):
         loaned_game = LoanedGame.objects.create(**validated_data)
