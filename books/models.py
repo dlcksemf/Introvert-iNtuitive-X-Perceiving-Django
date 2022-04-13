@@ -30,9 +30,9 @@ class Books(TimestampedModel):
 
     cover_photo = ProcessedImageField(upload_to='books/%Y/%M',
                                       blank=True,
-                                      processors=[ResizeToFill(100, 50)],
+                                      processors=[ResizeToFill(512, 512)],
                                       format='JPEG',
-                                      options={'quality': 60})
+                                      options={'quality': 80})
 
     title = models.CharField(max_length=100, db_index=True)
     writer = models.CharField(max_length=100, db_index=True)
