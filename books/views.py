@@ -98,11 +98,12 @@ class LoanedBooksViewSet(ModelViewSet):
             book = Books.objects.get(book_num=request.data["book_name"])
             bookname = book.title
             returndate=request.data["return_due_date"]
-            title = "다독다독 유클리드 소프트 도서 대출 안내 메세지입니다"
+            title = "다독다독 유클리드 북스 도서 대출 안내 메일"
             content = f"""
-{username}님 안녕하세요!
-{username}님이 빌린 책은 {bookname}이다.
-{username}님은 {returndate}까지 반납해야함니다
+{username}님 안녕하세요! 다독다독 유클리드 북스입니다.
+{username}님이 대출하신 {bookname} 도서는 {returndate}까지 반납해주셔야 함을 안내드립니다.
+
+반납하러 가기 -> www.kwondjango.com
             """
             sender = "jwheein950417@naver.com"
             receiver = f'{email}'
@@ -133,11 +134,12 @@ class LoanedBooksViewSet(ModelViewSet):
                 book = instance.book_name
                 bookname = book.title
                 returndate = request.data["return_due_date"]
-                title = "다독다독 유클리드 소프트 도서 대출 안내 메세지입니다"
+                title = "다독다독 유클리드 북스 도서 연장 안내 메일"
                 content = f"""
-    {username}님 안녕하세요!
-    {username}님이 빌린 책은 {bookname}이다.
-    근데 님이 연장을해서 {username}님은 {returndate}까지 반납해야함니다
+    {username}님 안녕하세요! 다독다독 유클리드 북스입니다.
+    {username}님이 대출하신 {bookname} 도서는 연장 신청이 되어 {returndate}까지 반납해주셔야 함을 안내드립니다.
+    
+    반납하러 가기 -> www.kwondjango.com
                            """
                 sender = "jwheein950417@naver.com"
                 receiver = f'{email}'
@@ -276,11 +278,12 @@ class ApplicationsViewSet(ModelViewSet):
                 username = instance.user_id.username
                 email = instance.user_id.email
                 bookname = instance.title
-                mailtitle = "다독다독 유클리드 소프트 도서 신청 안내 메세지입니다"
+                mailtitle = "다독다독 유클리드 북스 도서 신청 안내 메일"
                 content = f"""
-{username}님 안녕하세요!
-{username}님이 주문하신 책은 {bookname} 이다.
-그리고 그 책이 입고되었으니 대출하세요
+{username}님 안녕하세요! 다독다독 유클리드 북스입니다.
+{username}님이 주문하신 {bookname} 도서가 입고되었습니다. 대출해보세요!
+
+확인하러 가기 -> www.kwondjango.com
                            """
                 sender = "jwheein950417@naver.com"
                 receiver = f'{email}'
@@ -303,11 +306,13 @@ class ApplicationsViewSet(ModelViewSet):
                 username = instance.user_id.username
                 email = instance.user_id.email
                 bookname = instance.title
-                mailtitle = "다독다독 유클리드 소프트 도서 신청 안내 메세지입니다"
+                mailtitle = "다독다독 유클리드 북스 도서 신청 안내 메일"
                 content = f"""
-{username}님 안녕하세요!
-{username}님이 주문하신 책은 {bookname} 이다.
-그리고 그 책이 반려되었다
+{username}님 안녕하세요! 다독다독 유클리드 북스입니다.
+{username}님이 주문하신 {bookname} 도서가 반려되었음을 안내해드립니다.
+
+확인하러 가기 -> www.kwondjango.com
+
                                       """
                 sender = "jwheein950417@naver.com"
                 receiver = f'{email}'
