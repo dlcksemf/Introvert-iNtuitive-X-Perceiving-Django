@@ -34,7 +34,7 @@ class Game(TimestampedModel):
 
     game_cover_photo = ProcessedImageField(upload_to='books/%Y/%M',
                                            blank=True,
-                                           processors=[ResizeToFill(512, 512)],
+                                           # processors=[ResizeToFill(512, 512)],
                                            format='JPEG',
                                            options={'quality': 80})
 
