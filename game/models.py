@@ -1,6 +1,9 @@
 from django.conf import settings
 from django.core.validators import MaxValueValidator
 from django.db import models
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFill
+
 
 
 class TimestampedModel(models.Model):
@@ -29,10 +32,11 @@ class Game(TimestampedModel):
 
     game_amount = models.IntegerField(default=1)
 
-    game_cover_photo = models.ImageField(
-        upload_to="books/%Y/%M",
-        blank=True
-    )
+    game_cover_photo = ProcessedImageField(upload_to='books/%Y/%M',
+                                           blank=True,
+                                           processors=[ResizeToFill(100, 50)],
+                                           format='JPEG',
+                                           options={'quality': 60})
 
     def __str__(self):
         return self.game_name

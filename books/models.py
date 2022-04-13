@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.db import models
 from django.core.validators import MaxValueValidator
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFill
 
 
 class TimestampedModel(models.Model):
@@ -26,10 +28,12 @@ class Books(TimestampedModel):
     book_num = models.AutoField(primary_key=True)
     # integerfield 어떻게 쓰는지 확인
 
-    cover_photo = models.ImageField(
-        upload_to="books/%Y/%M",
-        blank=True
-    )
+    cover_photo = ProcessedImageField(upload_to='books/%Y/%M',
+                                      blank=True,
+                                      processors=[ResizeToFill(100, 50)],
+                                      format='JPEG',
+                                      options={'quality': 60})
+
     title = models.CharField(max_length=100, db_index=True)
     writer = models.CharField(max_length=100, db_index=True)
     translator = models.CharField(max_length=100, blank=True)
