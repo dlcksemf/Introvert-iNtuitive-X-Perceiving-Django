@@ -30,7 +30,7 @@ class Books(TimestampedModel):
 
     cover_photo = ProcessedImageField(upload_to='books/%Y/%M',
                                       blank=True,
-                                      processors=[ResizeToFill(512, 512)],
+                                      # processors=[ResizeToFill(512, 512)],
                                       format='JPEG',
                                       options={'quality': 80})
 
@@ -126,7 +126,7 @@ class Applications(TimestampedModel):
         return self.title
 
     class Meta:
-        ordering=["-application_num"]
+        ordering=["-state"]
         verbose_name="도서 신청"
         verbose_name_plural="도서 신청 목록"
 
