@@ -1,7 +1,5 @@
-import zoneinfo
-from django.conf import settings
+
 from django.utils import timezone
-from django.shortcuts import redirect, render
 import pytz
 
 class TimezoneMiddleware:
