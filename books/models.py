@@ -126,7 +126,7 @@ class Applications(TimestampedModel):
         return self.title
 
     class Meta:
-        ordering=["-application_num"]
+        ordering=["-state"]
         verbose_name="도서 신청"
         verbose_name_plural="도서 신청 목록"
 
