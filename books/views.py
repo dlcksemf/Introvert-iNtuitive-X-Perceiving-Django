@@ -376,30 +376,14 @@ class ReviewViewSet(ModelViewSet):
 
 @api_view()
 def naver_api(request):
-    headers ={'X-Naver-Client-Id': settings.NAVER_CLIENT_ID,
+    headers = {'X-Naver-Client-Id': settings.NAVER_CLIENT_ID,
              'X-Naver-Client-Secret': settings.NAVER_CLIENT_SECRET}
 
 
     query = request.query_params.get("query", "")
-    params = {"query":query, "d_isbn": str(query)}
+    params = {"query" : query, "d_isbn": str(query)}
     response = requests.get("https://openapi.naver.com/v1/search/book_adv.json", headers=headers, params=params)
     qs = response.json()
-    print(qs)
-    print(type(qs))
     return Response(qs)
-
-
-# Prepare a map of common locations to timezone choices you wish to offer.
-# common_timezones = {
-#     'Seoul': 'Asia/Seoul',
-# }
-#
-# def set_timezone(request):
-#     if request.method == 'POST':
-#         request.session['django_timezone'] = request.POST['timezone']
-#         return redirect('/')
-#     else:
-#         return render(request, 'template.html', {'timezones': common_timezones})
-
 
 
