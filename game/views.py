@@ -50,7 +50,7 @@ class LoanedGameViewSet(ModelViewSet):
     def send_email(smtp_info, msg):
         EMAIL_HOST_PASSWORD = getattr(settings, "EMAIL_HOST_PASSWORD", "EMAIL_HOST_PASSWORD")
         smtp_info = dict({"smtp_server": "smtp.naver.com",  # SMTP 서버 주소
-                          "smtp_user_id": "jwheein950417@naver.com",
+                          "smtp_user_id": "euclidsoft_books@naver.com",
                           "smtp_user_pw": EMAIL_HOST_PASSWORD,
                           "smtp_port": 587})  # SMTP 서버 포트
 
@@ -83,7 +83,7 @@ class LoanedGameViewSet(ModelViewSet):
 {username}님이 빌린 게임은 {gamename}입니다.
 {returntime_kr}까지 반납해야 합니다.
             """
-            sender = "jwheein950417@naver.com"
+            sender = "euclidsoft_books@naver.com"
             receiver = f'{email}'
             # # 메일 객체 생성 : 메시지 내용에는 한글이 들어가기 때문에 한글을 지원하는 문자 체계인 UTF-8을 명시해줍니다.
             msg = MIMEText(_text=content, _charset="utf-8")  # 메일 내용

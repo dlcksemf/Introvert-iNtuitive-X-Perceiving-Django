@@ -70,7 +70,7 @@ class LoanedBooksViewSet(ModelViewSet):
     def send_email(smtp_info, msg):
         EMAIL_HOST_PASSWORD=getattr(settings,"EMAIL_HOST_PASSWORD","EMAIL_HOST_PASSWORD")
         smtp_info = dict({"smtp_server": "smtp.naver.com",  # SMTP 서버 주소
-                          "smtp_user_id": "jwheein950417@naver.com",
+                          "smtp_user_id": "euclidsoft_books@naver.com",
                           "smtp_user_pw": EMAIL_HOST_PASSWORD,
                           "smtp_port": 587})  # SMTP 서버 포트
 
@@ -105,7 +105,7 @@ class LoanedBooksViewSet(ModelViewSet):
 
 반납하러 가기 -> www.kwondjango.com
             """
-            sender = "jwheein950417@naver.com"
+            sender = "euclidsoft_books@naver.com"
             receiver = f'{email}'
             # # 메일 객체 생성 : 메시지 내용에는 한글이 들어가기 때문에 한글을 지원하는 문자 체계인 UTF-8을 명시해줍니다.
             msg = MIMEText(_text=content, _charset="utf-8")  # 메일 내용
@@ -141,7 +141,7 @@ class LoanedBooksViewSet(ModelViewSet):
     
     반납하러 가기 -> www.kwondjango.com
                            """
-                sender = "jwheein950417@naver.com"
+                sender = "euclidsoft_books@naver.com"
                 receiver = f'{email}'
                 # # 메일 객체 생성 : 메시지 내용에는 한글이 들어가기 때문에 한글을 지원하는 문자 체계인 UTF-8을 명시해줍니다.
                 msg = MIMEText(_text=content, _charset="utf-8")  # 메일 내용
@@ -248,7 +248,7 @@ class ApplicationsViewSet(ModelViewSet):
     def send_email(smtp_info, msg):
         EMAIL_HOST_PASSWORD = getattr(settings, "EMAIL_HOST_PASSWORD", "EMAIL_HOST_PASSWORD")
         smtp_info = dict({"smtp_server": "smtp.naver.com",  # SMTP 서버 주소
-                          "smtp_user_id": "jwheein950417@naver.com",
+                          "smtp_user_id": "euclidsoft_books@naver.com",
                           "smtp_user_pw": EMAIL_HOST_PASSWORD,
                           "smtp_port": 587})  # SMTP 서버 포트
 
@@ -285,7 +285,7 @@ class ApplicationsViewSet(ModelViewSet):
 
 확인하러 가기 -> www.kwondjango.com
                            """
-                sender = "jwheein950417@naver.com"
+                sender = "euclidsoft_books@naver.com"
                 receiver = f'{email}'
                 # # 메일 객체 생성 : 메시지 내용에는 한글이 들어가기 때문에 한글을 지원하는 문자 체계인 UTF-8을 명시해줍니다.
                 msg = MIMEText(_text=content, _charset="utf-8")  # 메일 내용
@@ -314,7 +314,7 @@ class ApplicationsViewSet(ModelViewSet):
 확인하러 가기 -> www.kwondjango.com
 
                                       """
-                sender = "jwheein950417@naver.com"
+                sender = "euclidsoft_books@naver.com"
                 receiver = f'{email}'
                 # # 메일 객체 생성 : 메시지 내용에는 한글이 들어가기 때문에 한글을 지원하는 문자 체계인 UTF-8을 명시해줍니다.
                 msg = MIMEText(_text=content, _charset="utf-8")  # 메일 내용
