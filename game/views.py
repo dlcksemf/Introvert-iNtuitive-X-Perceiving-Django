@@ -77,10 +77,10 @@ class LoanedGameViewSet(ModelViewSet):
             returnduetime = returntime[2:16].replace('T', ' ')
             date_time_returnduetime = datetime.strptime(returnduetime, '%y-%m-%d %H:%M')
             returntime_kr = date_time_returnduetime + timedelta(hours=9)
-            title = "다독다독 유클리드 북스 게임 대출 안내 메일"
+            title = "다독다독 유클리드 북스 게임 대여 안내 메일"
             content = f"""
 {username}님 안녕하세요! 다독다독 유클리드 북스입니다.
-{username}님이 빌린 {gamename} 게임은 {returntime_kr}까지 반납해주셔야 함을 안내드립니다.
+{username}님이 대여하신 {gamename} 게임은 {returntime_kr}까지 반납해주셔야 함을 안내드립니다.
 
 반납하러 가기 -> www.kwondjango.com
             """
